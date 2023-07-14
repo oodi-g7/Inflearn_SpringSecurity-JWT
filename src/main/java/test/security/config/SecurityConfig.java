@@ -29,13 +29,18 @@ public class SecurityConfig{
 			.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") // "/admin/**" 식의 요청은 로그인 한 사용자 중 admin만 접근가능
 			.anyRequest().permitAll() // "/user/**", "/manager/**", "/admin/**" 를 제외한 다른 요청들은 권한 상관없이 접근가능
 			.and()
-			// 권한이 없는 페이지에 접근하려고 할때, 404페이지가 아니라 로그인 페이지를 보여주기
+			
+			// 권한이 없는 페이지에 접근하려고 할때, 404페이지가 아니라 로그인 페이지를 보여주기(로그인을 하지 않았을경우에! 로그인 한 경우인데 권한없는 페이지로 가려고 하면 404페이지로 보냄)
 			.formLogin() 
 			.loginPage("/loginForm")
+			
 			// "/login" 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행해줌.(method=POST)
 			// 따라서 우리는 /login주소와 매핑할 컨트롤러를 만들필요없음.
 			.loginProcessingUrl("/login")
+			
 			// default페이지는 메인페이지
+			// "/loginForm"을 요청해서 로그인 실행을 했을 경우에 default페이지가 메인페이지("/")이고,
+			// 만약 "/user"를 요청해서 로그인 실행을 했을 경우는 스프링시큐리티가 default페이지인 메인페이지가 아닌 사용자가 가려고 했던 "/user" 페이지로 이동시켜줌
 			.defaultSuccessUrl("/");
 		
 		return http.build();
