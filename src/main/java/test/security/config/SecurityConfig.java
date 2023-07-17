@@ -2,6 +2,7 @@ package test.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,6 +10,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 필터(SecurityConfig.class)가 스프링 필터체인에 등록됨. 현재 클래스에 등록될 필터들이 기본 필터 체인(스프링 필터체인)에 등록될 것이다! 
+@EnableGlobalMethodSecurity(securedEnabled = true, // secured 어노테이션 활성화 : IndexController - info() 메소드의  @Secured ! @Secured는 개별 매핑url에 간단하게 권한처리가능
+							prePostEnabled = true) // preAuthorize 어노테이션, postAuthorize 어노테이션 활성화 : IndexController - data() 메소드의 @PreAuthorize, @PostAuthorize
 public class SecurityConfig{
 	
 	// 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
@@ -45,5 +48,4 @@ public class SecurityConfig{
 		
 		return http.build();
 	}
-	
 }

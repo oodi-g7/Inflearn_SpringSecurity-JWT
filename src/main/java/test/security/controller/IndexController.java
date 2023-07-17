@@ -1,6 +1,8 @@
 package test.security.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,5 +68,19 @@ public class IndexController {
 		userRepository.save(user); // 회원가입 잘됨. 비밀번호 : 1234 => 시큐리티로 로그인할 수 없음. 이유는 패스워드가 암호화 안되었기 때문!!
 		
 		return "redirect:/loginForm"; // redirect를 붙여주면 /loginForm URL에 해당하는 함수를 호출. loginForm()
+	}
+	
+	@Secured("ROLE_ADMIN") // admin계정만 "/info" 매핑주소에 접근가능
+	@GetMapping("/info")
+	public @ResponseBody String info() {
+		return "개인정보";
+	}
+	
+//	@PostAuthorize // data() 메소드가 실행된 후 실행됨. 잘 사용하지는 않음
+	@PreAuthorize("hasRole('ROLE_MANAGER') " // data() 메소드가 실행되기 직전에 실행됨. 해당 메소드에 접근권한을 2개이상 설정시 사용. 
+			+ "or hasRole('ROLE_ADMIN')") // 1개만 설정할때는 @secured 사용하고, 2개이상이면 hasrole() or hasrole() ... 사용이 가능한 @preAuthorize() 사용
+	@GetMapping("/data")
+	public @ResponseBody String data() {
+		return "데이터정보";
 	}
 }

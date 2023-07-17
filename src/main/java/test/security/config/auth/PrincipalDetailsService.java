@@ -22,7 +22,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 	@Autowired
 	private UserRepository userRepository;
 	
-	// 시큐리티session > Authentication > UserDetails
+	// 시큐리티session > Authentication > UserDetailse
 	// 해당메소드에서 반환하는 UserDetails객체는 Authentication객체 안으로 들어갈 예정임!
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -34,5 +34,4 @@ public class PrincipalDetailsService implements UserDetailsService{
 		}
 		return null;
 	}
-
 }
