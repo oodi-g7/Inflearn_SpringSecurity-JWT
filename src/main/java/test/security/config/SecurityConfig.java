@@ -27,7 +27,7 @@ public class SecurityConfig{
 		http.csrf().disable();
 		http.authorizeRequests()
 			// 요청url마다 권한설정해주기
-			.antMatchers("/user/**").authenticated() // "/user/**" 식의 요청은 인증이 필요하다. =로그인한 사람만 접근가능
+			.antMatchers("/user/**").authenticated() // "/user/**" 식의 요청은 인증이 필요하다. =로그인한 사람만 접근가능(로그인한 사용자는 모두 접근가능)
 			.antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')") // "/manager/**" 식의 요청은 로그인 한 사용자 중 admin과 manager만 접근가능
 			.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") // "/admin/**" 식의 요청은 로그인 한 사용자 중 admin만 접근가능
 			.anyRequest().permitAll() // "/user/**", "/manager/**", "/admin/**" 를 제외한 다른 요청들은 권한 상관없이 접근가능

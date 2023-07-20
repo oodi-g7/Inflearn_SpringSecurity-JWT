@@ -30,8 +30,9 @@ public class PrincipalDetailsService implements UserDetailsService{
 		System.out.println("username : "+username);
 		User userEntity = userRepository.findByUsername(username);
 		if(userEntity != null) { // 가입되어 있는 유저라면,
-			return new PrincipalDetails(userEntity);
-		}
+			return new PrincipalDetails(userEntity); // -> 어디로 반환되는건가? Authentication 내부로 자동 반환됨.
+		}											 // -> 그리고 유저정보를 품은 Authentication객체는 시큐리티 세션안으로 들어가게됨.(loadUserByUsername 메소드가 알아서 다 해줌) 
+													 // => 로그인 완료!
 		return null;
 	}
 }
