@@ -347,14 +347,14 @@ public class IndexController {
 ```java
 // SecurityConfig
 @Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.authorizeRequests()
-			···
-			.loginProcessingUrl("/login")
-			···
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+	http.authorizeRequests()
+		···
+		.loginProcessingUrl("/login")
+		···
 
-		return http.build();
-	}
+	return http.build();
+}
 ```
 - **.loginProcessingUrl("/login")**
 	- "/login" 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행해준다.(method = POST)
@@ -377,7 +377,7 @@ public class IndexController {
 - 여기서 끝이 아니다. 시큐리티 로그인을 성공적으로 수행하기 위해선 추가적인 설정이 필요하다.
 
 ## 4-3. UserDetails, UserDetailsService 구현
-### 잠깐 서론,
+### 4-3-1. 잠깐 서론,
 <img src="./img/sec0-1.png">
 
 1. 앞서 SecurityConfig에 loginProcessingUrl("/login")설정을 통해, 이제 시큐리티는 "/login" 요청이 오면 이를 낚아채서 로그인을 진행시킴
@@ -400,7 +400,7 @@ public class IndexController {
 	- 그렇다면, UserDetails객체에서 어떻게 유저정보를 꺼낼까?
 	- <U>**→ UserDetails를 상속받는 클래스를 만들어서, UserDetails타입이 된 해당 클래스로 유저정보를 빼내면 된다 !**</U>
 
-### **UserDetails구현 : PrincipalDetails implements UserDetails**
+### **4-3-2. UserDetails구현 : PrincipalDetails implements UserDetails**
 - Spring Security에서 사용자의 정보를 담는 인터페이스
 - Spring Security에서 사용자의 정보를 불러오기 위해서 구현해야하는 인터페이스
 - 유저정보를 담기 위한 UserDetails객체를 만들어보자 !
@@ -473,6 +473,7 @@ public class PrincipalDetails implements UserDetails{
 ```
 1. 
 	```java
+	// User의 권한을 리턴
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> collect = new ArrayList<>(); // ArrayList는 Collection의 자식임 
@@ -485,8 +486,8 @@ public class PrincipalDetails implements UserDetails{
 		return collect;
 	}
 	```
-	- model패키지의 User를 확인해보면, User권한은 String타입인데 해당 메소드의 리턴값은 Collection<GrantedAuthority>이므로 Collection에 감싸서 유저권한정보를 넘겨야한다.
-	- 그러므로 우선 리턴값으로 사용될 Collection<GrantedAuthority> 타입 변수 collect를 선언해주고, Collection의 자식인 ArrayList로 초기화 시켜준다. 그리고 collect를 반환한다.
+	- model패키지의 User를 확인해보면, User권한은 String타입인데 해당 메소드의 리턴값은 Collection\<GrantedAuthority\>이므로 Collection에 감싸서 유저권한정보를 넘겨야한다.
+	- 그러므로 우선 리턴값으로 사용될 Collection\<GrantedAuthority\> 타입 변수 collect를 선언해주고, Collection의 자식인 ArrayList로 초기화 시켜준다. 그리고 collect를 반환한다.
 		```java
 		@Override
 		public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -568,7 +569,7 @@ public class PrincipalDetails implements UserDetails{
 - 이제 PrincipalDetails가 UserDetails를 상속하여 UserDetails타입이 되었으므로, 이를 Authentication객체에 넣을 수 있게 되었다.
 - 그렇다면 이제 SecuritySession에 접근하기 위한 Authentication객체를 생성해보자.
 
-### **UserDetailsService구현 : PrincipalDetailsService implements UserDetailsService**
+### **4-3-3. UserDetailsService구현 : PrincipalDetailsService implements UserDetailsService**
 - Spring Security에서 유저의 정보를 가져오는 인터페이스
 - Spring Security에서 유저의 정보를 불러오기 위해서 구현해야하는 인터페이스
 - 유저정보가 담긴 UserDetails객체를 SecuritySesssion에 넣기 위해 Authentication객체로 감싸주자 !
@@ -607,14 +608,16 @@ public class PrincipalDetailsService implements UserDetailsService{
 	- UserDetailsService타입의 빈인 PrincipalDetailsService.class를 찾은 후 loadUserByUsername()함수를 실행시켜, 로그인시 사용자가 입력한 username파라미터 값을 가져온다. (이때, loginForm.html에 유저이름을 넣는 input태그의 name속성은 무조건 "username"으로 오탈자 없이 적어줘야한다.)
 4. 
 	```java
-	// UserRepository
+	// UserRepository.class
 	public interface UserRepository extends JpaRepository<User, Integer>{
 		// Jpa Query methods
 		// select * from user where username = ?
 		public User findByUsername(String username); 
 	}
 	
-	// PrincipalDetailsService
+
+
+	// PrincipalDetailsService.class
 	@Autowired
 	private UserRepository userRepository;
 
@@ -624,7 +627,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 		return null;
 	}
 	```
-	loadUserByUsername()에서는 가져온 username파라미터를 이용하여, 로그인을 시도한 사용자가 DB에 저장되어 있는 회원인지를 검증한다.
+	- loadUserByUsername()에서는 가져온 username파라미터를 이용하여, 로그인을 시도한 사용자가 DB에 저장되어 있는 회원인지를 검증한다.
 5. 
 	```java
 	@Override
@@ -636,11 +639,11 @@ public class PrincipalDetailsService implements UserDetailsService{
 		return null;
 	}
 	```
-	- 가입되어 있는 유저라면 (userEntity != null), 해당 유저정보를 앞서 구현해둔 UserDetails타입의 PrincipalDetails객체에 담아 UserDetails타입의 객체를 생성하여 반환한다.(return new PrincipalDetails(userEntity))
-		- Q. 이때, 반환된 new PrincipalDetails(userEntity) 는 어디로 반환되는건가 ? 
-			- A. Authentication 내부로 자동 반환된다. 그리고 로그인한 유저정보를 품은 Authentication 객체는 SecuritySession안으로 들어가게 된다.
-			- 이러한 일련의 활동들은 전부 loadUserByUsername() 메소드가 알아서 다 해줌 !
-			- #### 로그인 완료 - !
+	- 가입되어 있는 유저라면 (userEntity != null), 해당 유저정보를 앞서 구현해둔 UserDetails타입의 PrincipalDetails객체에 담아 UserDetails타입의 객체를 생성하여 반환한다.(```return new PrincipalDetails(userEntity)```)
+		- **Q. 이때, 반환된 new PrincipalDetails(userEntity) 는 어디로 반환되는건가 ?**
+			- **A.** Authentication객체 내부로 자동 반환된다. 그리고 로그인한 유저정보를 품게 된 Authentication 객체는 SecuritySession안으로 들어가게 된다.
+			- 이러한 일련의 활동들은 전부 loadUserByUsername() 메소드가 자동으로 알아서 다 해줌.
+			- 이로써 로그인 완료 - !
 
 
 ### *ref*
