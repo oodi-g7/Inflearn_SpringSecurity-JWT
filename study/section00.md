@@ -1,4 +1,4 @@
-# 1장. 환경설정
+# 1강. 환경설정
 ## 1-1. MySQL Database 및 사용자 생성
 ```sql
 create user 'cos'@'%' identified by 'cos1234';
@@ -79,7 +79,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
 
 
 
-# 2장. 시큐리티 설정
+# 2강. 시큐리티 설정
 ## 2-1. 컨트롤러 매핑 주소 생성
 ```java
 @Controller
@@ -189,7 +189,7 @@ public class SecurityConfig{
 
 
 
-# 3장. 시큐리티 회원가입
+# 3강. 시큐리티 회원가입
 ## 3-1. model생성 : User
 ```java
 import java.sql.Timestamp;
@@ -342,7 +342,7 @@ public class IndexController {
 - **user.setPassword(encPassword);** : 유저에 인코딩된 패스워드를 넣어준 후, .save()하여 회원가입을 진행한다.
 - **return "redirect:/loginForm";** : 회원가입을 완료한 사용자는 redirect를 이용하여 /loginForm URL로 보내준다.
 
-# 4장. 시큐리티 로그인
+# 4강. 시큐리티 로그인
 ## 4-1. SecurityConfig 설정추가
 ```java
 // SecurityConfig
@@ -650,7 +650,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 - [SpringSecurity UserDetails, UserDetailsService란?](https://programmer93.tistory.com/68)
 - [SpringSecurity 주요 아키텍처 이해](https://catsbi.oopy.io/f9b0d83c-4775-47da-9c81-2261851fe0d0)
 
-# 5장. 시큐리티 권한처리
+# 5강. 시큐리티 권한처리
 ## 5-1. ROLE_MANAGER, ROLE_ADMIN 유저 생성
 - 회원가입 페이지에서 manager와 admin 계정을 생성한다.
 
