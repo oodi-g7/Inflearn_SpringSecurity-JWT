@@ -31,8 +31,8 @@ spring:
       client:
         registration:
           google:
-            client-id: test
-            client-secret: test
+            client-id: 1234
+            client-secret: 1234
             scope:
             - email
             - profile
