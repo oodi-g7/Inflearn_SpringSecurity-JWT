@@ -44,7 +44,10 @@ public class SecurityConfig{
 			// default페이지는 메인페이지
 			// "/loginForm"을 요청해서 로그인 실행을 했을 경우에 default페이지가 메인페이지("/")이고,
 			// 만약 "/user"를 요청해서 로그인 실행을 했을 경우는 스프링시큐리티가 default페이지인 메인페이지가 아닌 사용자가 가려고 했던 "/user" 페이지로 이동시켜줌
-			.defaultSuccessUrl("/");
+			.defaultSuccessUrl("/")
+			.and()
+			.oauth2Login()
+			.loginPage("/loginForm"); // 구글 로그인이 완료된 뒤에 후처리가 필요함.
 		
 		return http.build();
 	}

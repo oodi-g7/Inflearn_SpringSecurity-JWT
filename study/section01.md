@@ -31,6 +31,7 @@
         4. Access Token을 얻기 위해 필요한 것이 (1)에서 언급한 **인증코드** 이며, 리디렉션 URI에는 해당 코드를 받을 수 있는 주소를 입력해주면 된다.
         5. 만약 구글 로그인을 전부 다 직접 구현할 것이라면 해당 URI를 자유롭게 작성해도 괜찮지만, <U>**우리는 OAuth2-Client라는 라이브러리를 사용할 것이므로 해당 주소로 고정임. 다른 주소로는 사용불가 !**</U>
 3. 생성된 클라이언트 ID와 클라이언트 보안 비밀번호 따로 저장해두기. 유출안되도록 조심 !
+
     <img src="./img/sec1-4.png">
 ---
 #### ※ [참고] OAuth2-Client 라이브러리 ※
@@ -83,8 +84,55 @@
     <a href="/joinForm">회원가입을 아직 하지 않으셨나요?</a>
     </body>
     ```
-    - '구글 로그인'이라는 버튼 추가
+    - '구글 로그인' 버튼 추가
         - oauth2-client 라이브러리 사용시 "/oauth2/authorization/google" 라는 주소로 입력 (변경불가)
+4. localhost:8080/loginForm 으로 접속
+    - 구글 로그인 버튼 선택
+
+    <img src="./img/sec1-5.png">
+
+    - 404 페이지 확인
+    
+    <img src="./img/sec1-6.png">
+
+5. SecurityConfig 설정 추가하기
+    ```java
+    @Configuration
+    @EnableWebSecurity
+    @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+    public class SecurityConfig{
+        @Bean
+	    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+            http.authorizeRequests()
+                ···
+                .and()
+                .oauth2Login()
+                .loginPage("/loginForm");
+        }
+    }
+    ```
+6. 다시 localhost:8080/loginForm 으로 접속
+    - 구글 로그인 버튼 선택
+
+    <img src="./img/sec1-5.png">
+
+    - 구글 로그인 Form 확인
+
+    <img src="./img/sec1-7.png">
+
+    - 구글 로그인 완료 후 인덱스 페이지로 이동 확인
+        - SecurityConfig.class에서 .defaultSuccessUrl("/") 설정 참고
+
+    <img src="./img/sec1-8.png">
+
+    - "/manager" 페이지로 이동
+
+    <img src="./img/sec1-9.png">
+
+    - "/manager" 페이지로 이동시 403페이지를 만날 수 있는데, 이는 구글 로그인은 인증 완료되었지만 해당 로그인계정에 대한 세션정보가 없어서 접근이 불가능한 것! 
+    - <U>**(즉, 구글 로그인이 완료된 뒤에 "후처리"가 필요함)**</U>
+
+
 
 
 
