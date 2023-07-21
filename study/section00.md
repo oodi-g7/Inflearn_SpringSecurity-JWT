@@ -677,7 +677,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 		···
 	}
 	```
-	- **@EnableGlobalMethodSecurity** 어노테이션은 내장옵션을 통해서 컨트롤러 메소드별 권한설정을 도와준다.
+	- **@EnableGlobalMethodSecurity** 어노테이션은 옵션설정을 통해서 컨트롤러 메소드별 권한설정을 도와준다.
 	- 현재 securedEnabled옵션을 true로 설정해두면, @Secured 어노테이션이 활성화된다.
 
 - IndexController에 새로운 메서드를 추가한다.
@@ -698,8 +698,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 	```java
 	@Configuration
 	@EnableWebSecurity
-	@EnableGlobalMethodSecurity(securedEnabled = true,
-								prePostEnabled = true)
+	@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 	public class SecurityConfig{ 
 		···
 	}
@@ -732,4 +731,4 @@ public class PrincipalDetailsService implements UserDetailsService{
 	- 일반적으로 잘 사용되지는 않는다.
 
 ### 5-2-3. 정리
-- SecurityConfig에서 글로벌로 권한처리를 하는 것이 아니라, 개별 메소드에 대한 특정한 권한처리를 하고 싶을때 @EnableGlobalMethodSecurity 어노테이션을 이용할 수 있다.
+- SecurityConfig에서 글로벌로 권한처리를 하는 것이 아니라, 개별 메소드에 대한 특정한 권한처리를 하고 싶을때는 @EnableGlobalMethodSecurity 어노테이션을 이용할 수 있다.
