@@ -21,7 +21,7 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
-	private String role; // ROLE_USER, ROLE_ADMIN
+	private String role; // ROLE_USER, ROLE_MANAGER, ROLE_ADMIN
 	@CreationTimestamp // 자동생성
 	private Timestamp createDate;
 }
