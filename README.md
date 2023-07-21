@@ -15,6 +15,6 @@
 
 ## 📌study
 - [section 00. 스프링 시큐리티 기본](./study/section00.md)
-- section 01. 스프링 시큐리티 OAuth2.0
+- [section 01. 스프링 시큐리티 OAuth2.0](./study/section01.md)
 - section 02. 스프링 시큐리티 웹 보안 이해
 - section 03. 스프링 시큐리티 JWT 서버 구축
