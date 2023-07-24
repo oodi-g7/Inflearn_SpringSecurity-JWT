@@ -14,7 +14,34 @@
         - JWT 이해
 
 ## 📌study
-- [section 00. 스프링 시큐리티 기본](./study/section00.md)
-- [section 01. 스프링 시큐리티 OAuth2.0](./study/section01.md)
-- section 02. 스프링 시큐리티 웹 보안 이해
-- section 03. 스프링 시큐리티 JWT 서버 구축
+### Section 0. 스프링 시큐리티 기본
+- [1강. 환경설정](./study/section0_1.md)
+- [2강. 시큐리티 설정](./study/section0_2.md)
+- [3강. 시큐리티 회원가입](./study/section0_3.md)
+- [4강. 시큐리티 로그인](./study/section0_4.md)
+- [5강. 시큐리티 권한처리](./study/section0_5.md)
+### Section 1. 스프링 시큐리티 OAuth2.0
+- [6강. 구글 로그인 준비](./study/section1_6.md)
+- [7강. 구글 회원 프로필 정보 받아보기](./study/section1_7.md)
+- [8강. Authentication객체가 가질수 있는 2가지 타입](./study/section1_8.md)
+- [9강. 구글 로그인 및 자동 회원가입 진행 완료](./study/section1_9.md)
+- [10강. 페이스북 로그인 완료](./study/section1_10.md)
+- [11강. 네이버 로그인 완료](./study/section1_11.md)
+### Section 2. 스프링 시큐리티 웹 보안 이해
+- 12강. JWT를 이해하기 전 세션에 대해 알아보자
+- 13강. JWT를 이해하기 전 TCP에 대해서 알아보자
+- 14강. JWT를 이해하기 전 CIA에 대해서 알아보자
+- 15강. JWT를 이해하기 전 RSA에 대해서 알아보자
+- 16강. JWT를 이해하기전 RFC문서란
+### Section 3. 스프링 시큐리티 JWT 서버 구축
+- 17강. JWT 구조 이해
+- 18강. JWT 프로젝트 세팅
+- 19강. JWT를 위한 yml파일 세팅
+- 20강. JWT를 위한 security 설정
+- 21강. JWT Bearer 인증 방식
+- 22강. JWT Filter 등록 테스트
+- 23강. JWT 임시 토큰 만들어서 테스트 해보기
+- 24강. JWT를 위한 로그인 시도
+- 25강. JWT를 위한 강제 로그인 진행
+- 26강. JWT토큰 만들어서 응답하기
+- 27강. JWT토큰 서버 구축 완료
