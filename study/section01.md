@@ -356,7 +356,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
     6. AccessToken 받음 <U>**: 여기까지가 userRequest정보에 해당함**</U>
     7. userRequest정보는 어떻게 사용해야하나 ? (로그인 후처리)
     8. DefaultOAuth2UserService의 loadUser() 함수를 호출
-    9. loadUser(userRequest) 를 이용해서 구글로부터 회원프로필을 받아옴 <U>**: 이것이 loadUser()함수의 역할**</U>
+    9. (8)에 함수에다 userRequest정보를 넘겨서 구글로부터 회원프로필을 받아옴 : <U>**이것이 loadUser()함수의 역할 !**</U>
 
 ## 8-2. 일반로그인 vs OAuth로그인 비교 테스트
 - ## 8-2-1. IndexController에 메소드 추가 : testLogin()
@@ -412,7 +412,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
                 ```
         - ※정리※
             - <U>일반사용자 로그인시,</U> 로그인한 사용자의 정보를 확인하는 방법 2가지
-            - (1) Authentication객체를 Dependency Injection하여 PrincipalDetails로 다운캐스팅하여 User Object를 조회할 수 있다.
+            - (1) Authentication객체를 Dependency Injection한뒤, PrincipalDetails로 다운캐스팅하여 User Object를 조회할 수 있다.
             - (2) @AuthenticationPrincipal 어노테이션을 통해서 User Object를 조회할 수 있다.
         - 최종코드
             ```java
@@ -445,7 +445,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
             [에러로그]
             java.lang.ClassCastException: org.springframework.security.oauth2.core.user.DefaultOAuth2User cannot be cast to test.security.config.auth.PrincipalDetails
             ```
-            - 에러로그를 확인해보면 OAuth로그인시에는 UserDetails(PrincipalDetails) 타입으로 캐스팅이 불가능하다고 뜬다.
+            - 에러로그를 확인해보면 OAuth로그인시에는 UserDetails타입(PrincipalDetails타입)으로 캐스팅이 불가능하다고 뜬다.
             - 그렇다면, OAuth로그인시 해당 로그인 유저정보를 조회할 메소드를 하나 더 만들어주자.
 - ## 8-2-2. IndexController에 메소드 추가 : testOAuthLogin()
     ```java
@@ -473,7 +473,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
             OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal(); 
             System.out.println("authentication : " + oauth2User.getAttributes());
             ```
-            - Oauth로그인시에 authentication이 UserDetails(principalDetails)타입으로 캐스팅이 불가능했으므로, OAuth2User타입으로 다운캐스팅 해준다.
+            - Oauth로그인시에 authentication이 UserDetails타입(principalDetails타입)으로 캐스팅이 불가능했으므로, OAuth2User타입으로 다운캐스팅 해준다.
             - 다운캐스팅한 principal정보를 .getAttributes()로 꺼내어 조회한다.
         - 
             ```java
@@ -485,7 +485,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
             - 받아온 세션정보를 .getAttributes()로 꺼내어 조회한다.
         - ※정리※
             - <U>Oauth로그인시,</U> 로그인한 사용자의 정보를 확인하는 방법 2가지
-            - (1) Authentication객체를 Dependency Injection하여 OAuth2User로 다운캐스팅하여 User Object를 조회할 수 있다.
+            - (1) Authentication객체를 Dependency Injection한뒤, OAuth2User로 다운캐스팅하여 User Object를 조회할 수 있다.
             - (2) @AuthenticationPrincipal 어노테이션을 통해서 User Object를 조회할 수 있다.
             - 
                 ```bash
@@ -528,9 +528,9 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
         }
         ```
     - 비교하기
-        - testLogin()은 authentication을 받아서(DI) UserDetails(PrincipalDetails)로 다운캐스팅 해주었고,
+        - testLogin()은 Authentication을 받아서(DI) UserDetails(PrincipalDetails)로 다운캐스팅 해주었고,
             - → Authentication객체에 UserDetails타입이 들어갈 수 있다
-        - testOAuthLogin()은 authentication을 받아서(DI) OAuth2User로 다운캐스팅 해주었다.
+        - testOAuthLogin()은 Authentication을 받아서(DI) OAuth2User로 다운캐스팅 해주었다.
             - → Authentication객체에 OAuth2User타입이 들어갈 수 있다
     - 결론
         - Authentication객체에는 UserDetails타입과 OAuth2User타입 모두가 들어갈 수 있다.
@@ -540,19 +540,20 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
         1. 서버가 갖고 있는 세션 영역 내에서, 스프링 시큐리티는 자신만의 세션을 따로 갖고 있다.
         2. 시큐리티가 관리하는 세션 안에 들어갈 수 있는 타입은 Authentication객체밖에 없다.
             - 시큐리티 세션안에 Authentication객체가 들어온 순간이 바로 로그인이 완료된 것 !
-            - 로그인과 동시에 세션안에 Authentication객체가 들어갔으니(스프링 컨테이너가 Authentication을 관리하기 시작), 로그인한 사용자가 "/test/login" 또는 "/test/oauth/login" 요청을 하면, 방금 우리가 컨트롤러에 작성해둔 것처럼 Authentication을 DI할 수 있음.
-        3. Authentication객체 안에 들어갈 수 있는 2개의 타입
+            - 로그인과 동시에 세션안에 Authentication객체가 들어갔으니(스프링 컨테이너가 Authentication을 관리하기 시작), 로그인한 사용자가 "/test/login" 또는 "/test/oauth/login" 요청을 하면, 방금 우리가 컨트롤러에 작성해둔 것처럼 Authentication을 DI할 수 있었던 것 !
+        3. Authentication 객체 안에 들어갈 수 있는 2개의 타입
             - UserDetails 타입 : 일반적인 로그인을 할때 만들어짐
             - OAuth2User 타입 : OAuth로그인(소셜로그인)을 할때 만들어짐
 - ### 8-2-4. PrincipalDetails 수정
-    - 일반적인 로그인을 했을때는 @AuthenticationPrincipal PrincipalDetails userDetails 이 필요하고, OAuth로그인을 했을때는 @AuthenticationPrincipal OAuth2User oauth가 필요한 상황. 
+    - 일반적인 로그인을 했을때는 <U>@AuthenticationPrincipal PrincipalDetails userDetails</U> 이 필요하고, OAuth로그인을 했을때는 <U>@AuthenticationPrincipal OAuth2User oauth</U>가 필요한 상황. 
     - 메소드를 각 로그인 상황에 맞게 2개씩 만들기에는 번거롭고... 어떻게 해결할까?
     - Authentication 안에 들어갈 수 있는 UserDetails와 OAuth2User 모두를 상속받는 클래스를 만들어서, 해당 클래스 객체를 Authentication에 넣어주면 됨 !
-        - 우리는 이미 UserDetails를 상속받는 PrincipalDetails클래스가 있으므로, 해당 클래스를 아래 코드와 같이 수정한다.
-        - 또한 Authentication안에 PrincipalDetails클래스 객체를 넣어주는 건, PrincipalDetailsService클래스의 loadUserByUsername() 함수가 호출될때 자동으로 진행되니까 신경쓸필요 없음.(section0의 4-3-3 참고)
+        - 우리는 이미 UserDetails를 상속받는 PrincipalDetails클래스가 있으므로 이것을 활용 !
+        - 이때 Authentication안에 PrincipalDetails클래스 객체를 넣어주는 건, PrincipalDetailsService클래스의 loadUserByUsername() 함수가 호출될때 자동으로 진행되니까 신경 쓸필요 없음.(section0의 4-3-3 참고)
+        - PrincipalDetails 클래스를 아래 코드와 같이 수정한다.
         ```java
         @Data
-        public class PrincipalDetails implements UserDetails, OAuth2User{
+        public class PrincipalDetails implements UserDetails, OAuth2User{ //OAuth2User 추가 
             ···
             // OAuth2User 인터페이스 메소드 재정의
             @Override
@@ -566,12 +567,12 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
             }
         }
         ```
-        
-        <img src="./img/sec1-13.png">
-
         - OAuth2User를 함께 implements해주고
         - OAuth2User인터페이스의 메소드들을 override해준다.
         - <U>**이제 일반로그인이든 OAuth로그인이든 PrincipalDetails타입으로 묶어서 받을 수 있음.**</U>
+        
+        <img src="./img/sec1-13.png">
+
 # 9강. 구글  로그인 및 자동 회원가입 진행 완료
 # 10강. 페이스북 로그인 완료
 # 11강. 네이버 로그인 완료
