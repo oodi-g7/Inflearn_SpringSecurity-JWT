@@ -407,6 +407,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 - Spring Security에서 사용자의 정보를 불러오기 위해서 구현해야하는 인터페이스
 - 유저정보를 담기 위한 UserDetails객체를 만들어보자 !
 ```java
+@Data
 public class PrincipalDetails implements UserDetails{
 	
 	// 콤포지션(has-a)

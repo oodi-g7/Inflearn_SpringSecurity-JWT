@@ -2,10 +2,13 @@ package test.security.config.auth;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import lombok.Data;
 import test.security.model.User;
 
 // 시큐리티는 이제 /login 주소 요청이 오면 이를 낚아채서 로그인을 진행시킴 (SecurityConfig.java에서 loginProcessingUrl("/login") 설정)
@@ -27,8 +30,8 @@ import test.security.model.User;
 // => PrincipalDetails가 UserDetails를 상속받게하여 UserDetails타입이 되면, 이를 이용해 유저정보를 꺼낸다.
 // : Security Session => Authentication => UserDetails(PrincipalDetails) => 유저정보
 // 그럼 이제 PrincipalDetails객체를 Authentication객체에 넣을 수 있게 됨
-
-public class PrincipalDetails implements UserDetails{
+@Data
+public class PrincipalDetails implements UserDetails, OAuth2User{
 	
 	// 콤포지션(has-a)
 	// 기존클래스가 새로운 클래스의 구성요소로 사용되는것
@@ -92,5 +95,16 @@ public class PrincipalDetails implements UserDetails{
 		// 우리 사이트에서 1년동안 회원이 로그인을 안해서 휴면 계정으로 변환되었다면 그때 false값 반환
 		// 즉, 현재시간 - 마지막 로그인 날짜 => 1년을 초과하면 return false;
 		return true;
+	}
+	
+	// OAuth2User 인터페이스 메소드 재정의
+	@Override
+	public Map<String, Object> getAttributes() {
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return null;
 	}
 }
