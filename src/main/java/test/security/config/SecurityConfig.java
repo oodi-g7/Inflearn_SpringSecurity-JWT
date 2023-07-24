@@ -1,5 +1,6 @@
 package test.security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -8,11 +9,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import test.security.config.oauth.PrincipalOauth2UserService;
+
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 필터(SecurityConfig.class)가 스프링 필터체인에 등록됨. 현재 클래스에 등록될 필터들이 기본 필터 체인(스프링 필터체인)에 등록될 것이다! 
 @EnableGlobalMethodSecurity(securedEnabled = true, // secured 어노테이션 활성화 : IndexController - info() 메소드의  @Secured ! @Secured는 개별 매핑url에 간단하게 권한처리가능
 							prePostEnabled = true) // preAuthorize 어노테이션, postAuthorize 어노테이션 활성화 : IndexController - data() 메소드의 @PreAuthorize, @PostAuthorize
 public class SecurityConfig{
+	
+	@Autowired
+	private PrincipalOauth2UserService principalOauth2UserService;
 	
 	// 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
 	@Bean 
@@ -46,8 +52,16 @@ public class SecurityConfig{
 			// 만약 "/user"를 요청해서 로그인 실행을 했을 경우는 스프링시큐리티가 default페이지인 메인페이지가 아닌 사용자가 가려고 했던 "/user" 페이지로 이동시켜줌
 			.defaultSuccessUrl("/")
 			.and()
+			
+			// 구글로그인
 			.oauth2Login()
-			.loginPage("/loginForm"); // 구글 로그인이 완료된 뒤에 후처리가 필요함.
+			.loginPage("/loginForm")
+		
+			// 구글 로그인이 완료된 뒤에 후처리가 필요함. Tip. 로그인완료 -> 코드X, 엑세스토큰+사용자프로필정보O
+			// 1.코드받기(인증), 2.엑세스토큰(권한), 3.사용자프로필 정보를 가져오고, 4.그 정보를 토대로 회원가입을 자동으로 진행시키기도 함
+			// 4-2. (이메일, 전화번호, 이름, 아이디) 쇼핑몰 -> (집주소), 백화점몰 -> (vip등급, 일반등급)
+			.userInfoEndpoint()
+			.userService(principalOauth2UserService);
 		
 		return http.build();
 	}

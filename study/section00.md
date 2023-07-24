@@ -342,6 +342,8 @@ public class IndexController {
 - **user.setPassword(encPassword);** : 유저에 인코딩된 패스워드를 넣어준 후, .save()하여 회원가입을 진행한다.
 - **return "redirect:/loginForm";** : 회원가입을 완료한 사용자는 redirect를 이용하여 /loginForm URL로 보내준다.
 
+
+
 # 4강. 시큐리티 로그인
 ## 4-1. SecurityConfig 설정추가
 ```java
@@ -645,10 +647,13 @@ public class PrincipalDetailsService implements UserDetailsService{
 			- 이러한 일련의 활동들은 전부 loadUserByUsername() 메소드가 자동으로 알아서 다 해줌.
 			- 이로써 로그인 완료 - !
 
-
+---
 ### *ref*
 - [SpringSecurity UserDetails, UserDetailsService란?](https://programmer93.tistory.com/68)
 - [SpringSecurity 주요 아키텍처 이해](https://catsbi.oopy.io/f9b0d83c-4775-47da-9c81-2261851fe0d0)
+---
+
+
 
 # 5강. 시큐리티 권한처리
 ## 5-1. ROLE_MANAGER, ROLE_ADMIN 유저 생성
