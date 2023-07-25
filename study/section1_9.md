@@ -1,6 +1,7 @@
 # 9강. 구글 로그인 및 자동 회원가입 진행 완료
 ## 9-1. PrincipalDetails 클래스의 목적
 ### 9-1-1. 그림1
+
 <img src="./img/sec1-14.png">
 
 1. Security Session 영역에는 Authentication객체만 접근이 가능하다.
