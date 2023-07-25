@@ -254,9 +254,9 @@
             - 실행된 함수는 PrincipalDetails객체에 User객체와 구글 서버가 보내준 사용자 프로필 정보를 함께 담아 리턴한다.
         - 해당 함수들이 동작하는 이유는 스프링 시큐리티는 loginProcessingUrl로 설정해둔 요청이 실행되었을때(="/login") <U>UserDetailsService 타입으로 IoC되어 있는 loadUserByUsername()함수</U>와, <U>OAuth2UserService 타입으로 IoC되어 있는 loadUser() 함수</U>를 자동으로 실행시키기 때문이다.
     4. loadUserByUsername()함수 또는 loadUser()함수가 리턴한 PrincipalDetails객체는 UserDetails와 OAuth2User 인터페이스를 상속받고 있으므로, SecuritySession에 접근이 가능하다.
-    5. 생성된 PrincipalDetails객체는 유저정보와 구글로그인시 구글 서버로부터 받은 프로필정보를 들고 SecuritySession에 들어간다.
-    6. 세션에 로그인한 사용자 정보가 들어온후, @AuthenticationPrincipal 어노테이션이 생성된다.
-        - 생성된 해당 어노테이션을 이용하여 세션정보에 접근해서 사용자 정보를 가져올 수 있다.
+    5. 생성된 PrincipalDetails객체는 유저정보와 (구글로그인시) 구글 서버로부터 받은 프로필정보를 들고 SecuritySession에 들어간다.
+    6. 세션에 '로그인한 사용자 정보'가 들어온후, @AuthenticationPrincipal 어노테이션이 생성된다.
+        - 생성된 해당 어노테이션을 이용하면 세션정보에 접근해서 사용자 정보를 가져올 수 있다.
         - 예시)
             ```java
             // IndexController
@@ -269,8 +269,8 @@
             ```
     ---
     - ※ PrincipalDetailsService와 PrincipalOauth2UserService의 존재이유 ※
-        - 해당 서비스의 loadUserByUsername()함수가 리턴하는 UserDetails객체와 loadUser()함수가 리턴하는 OAuth2User객체는 Authentication객체에 저장된다.
-        - 그러므로 우리는 해당 메소드의 리턴타입을 PrincipalDetails로 바꿔주기 위해
+        - 두 서비스의 loadUserByUsername()함수가 리턴하는 UserDetails객체와 loadUser()함수가 리턴하는 OAuth2User객체는 Authentication객체에 저장된다.
+        - 그러므로 우리는 해당 메소드들의 리턴타입을 PrincipalDetails로 바꿔주기 위해
         UserDetailsService를 상속받은 PrincipalDetailsService와 DefaultOAuth2UserService를 상속받은 PrincipalOauth2UserService를 구현한 것이다.
-        - 또한 PrincipalOauth2UserService 같은 경우에는, 구글 로그인이 최초일때 자동회원가입 로직도 추가해주기위해 구현한 이유도 있다.
+        - 또한 PrincipalOauth2UserService 같은 경우에는, 구글 로그인이 최초일때 자동회원가입 로직도 추가해주기 위해 구현한 이유도 있다.
     ---
