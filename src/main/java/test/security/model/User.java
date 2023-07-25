@@ -44,5 +44,4 @@ public class User {
 		this.providerId = providerId;
 		this.createDate = createDate;
 	}
-
 }
