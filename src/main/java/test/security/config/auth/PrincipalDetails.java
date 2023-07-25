@@ -39,10 +39,17 @@ public class PrincipalDetails implements UserDetails, OAuth2User{
 	// 상이한 클래스 관계에서, 한 클래스가 다른 클래스의 기능을 사용하여 구현해야 할때, composition(합성)을 사용
 	private User user; 
 	
+	private Map<String, Object> attributes;
+	
 	// PrincipalDetails객체 생성과 동시에 필드값도 채움
 	// 따라서 생성된 PrincipalDetails객체는 생성자 파라미터에 넘어온 유저에 한해서만 기능을 동작함. 
-	public PrincipalDetails(User user) {
+	public PrincipalDetails(User user) { // 일반로그인시 사용
 		this.user = user;
+	}
+	
+	public PrincipalDetails(User user, Map<String, Object> attributes) { // OAuth로그인시 사용
+		this.user = user;
+		this.attributes = attributes;
 	}
 	
 	// User의 권한을 리턴
@@ -100,7 +107,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User{
 	// OAuth2User 인터페이스 메소드 재정의
 	@Override
 	public Map<String, Object> getAttributes() {
-		return null;
+		return attributes;
 	}
 
 	@Override

@@ -24,6 +24,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 	
 	// 시큐리티session > Authentication > UserDetailse
 	// 해당메소드에서 반환하는 UserDetails객체는 Authentication객체 안으로 들어갈 예정임!
+	// 함수 종료시 @AuthenticationPrincipal 어노테이션이 만들어진다.
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// 여기선 우선 넘어온 유저이름을 가지고 해당 유저가 현재 저장되어 있는 유저인지 확인!

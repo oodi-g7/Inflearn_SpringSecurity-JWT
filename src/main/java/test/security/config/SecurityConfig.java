@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import test.security.config.oauth.PrincipalOauth2UserService;
@@ -20,13 +19,7 @@ public class SecurityConfig{
 	@Autowired
 	private PrincipalOauth2UserService principalOauth2UserService;
 	
-	// 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
-	@Bean 
-	public BCryptPasswordEncoder encodePwd() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
+	@Bean // 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 		//csrf = cross site request forgery (사이트 간 위조요청) : 정상적인 사용자가 의도치않은 위조요청을 보내는것을 막음
 		//REST API의 앤드포인트에 의존하는 구조(JSON방식으로 통신)는 서버쪽에 세션이나 브라우저 쿠키에 의존하지 않음. 따라서 더이상 CSRF에 대한 관련이 없으므로 이러한 API는 CSRF공격을 받을 가능성이 존재하지 않음
