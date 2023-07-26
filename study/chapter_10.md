@@ -150,3 +150,152 @@ Hibernate: insert into User (createDate, email, password, provider, providerId, 
     에서 알 수 있듯이, 페이스북에는 sub이라는 key값이 없으므로 null값이 들어간 것이다. 페이스북에는 sub가 아니라 id라는 key명을 사용해주어야 한다.
     
     ### ※ 결론적으로, 페이스북 로그인은 정상작동하지만 로그인 사이트가 변경될때마다 속성 key값이 달라지므로 유지보수 측면에서 좋지 않은 코드이다. → 즉, 리팩토링이 필요하다 ! ※
+
+## 10-5. PrincipalOauth2UserService 코드 리팩토링
+### 10-5-1. OAuth2USerInfo 인터페이스 및 구현체 생성
+
+<img src="./img/chapter10_12.png">
+
+1. config/oauth 밑에 provider패키지 생성
+2. OAuth2UserInfo 인터페이스 생성
+    ```java
+    public interface OAuth2UserInfo {
+	
+        String getProviderId(); // google의 pk, facebook의 pk, ...
+        String getProvider(); // google, facebook, ...
+        String getEmail();
+        String getName();
+
+    }
+    ```
+3. GoogleUserInfo 구현체 생성
+    ```java
+    public class GoogleUserInfo implements OAuth2UserInfo {
+	
+        private Map<String, Object> attributes; // oauth2User.getAttributes()
+        
+        public GoogleUserInfo(Map<String, Object> attributes) {
+            this.attributes = attributes;
+        }
+
+        @Override
+        public String getProviderId() {
+            return (String)attributes.get("sub");
+        }
+
+        @Override
+        public String getProvider() {
+            return "google";
+        }
+
+        @Override
+        public String getEmail() {
+            return (String)attributes.get("email");
+        }
+
+        @Override
+        public String getName() {
+            return (String)attributes.get("name");
+        }
+
+    }
+    ```
+4. FacebookUserInfo 구현체 생성
+    ```java
+    public class FacebookUserInfo implements OAuth2UserInfo {
+	
+        private Map<String, Object> attributes; //oauth2User.getAttributes()
+        
+        public FacebookUserInfo(Map<String, Object> attributes) {
+            this.attributes = attributes;
+        }
+        
+        @Override
+        public String getProviderId() {
+            return (String)attributes.get("id");
+        }
+
+        @Override
+        public String getProvider() {
+            return "facebook";
+        }
+
+        @Override
+        public String getEmail() {
+            return (String)attributes.get("email");
+        }
+
+        @Override
+        public String getName() {
+            return (String)attributes.get("name");
+        }
+
+    }
+    ```
+
+### 10-5-2. PrincipalOauth2UserService 리팩토링
+1. PrincipalOauth2UserService의 loadUser()함수 리팩토링
+    ```java
+    @Override
+	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+		System.out.println("getClientRegistration : " + userRequest.getClientRegistration());
+		System.out.println("getAccessTokenValue : " + userRequest.getAccessToken().getTokenValue());
+		
+		OAuth2User oauth2User = super.loadUser(userRequest);
+		System.out.println("getAttributes : " + oauth2User.getAttributes());
+		
+        // <추가하기>
+		Map<String, Object> attributes = oauth2User.getAttributes();
+		String registrationId = userRequest.getClientRegistration().getRegistrationId();
+		OAuth2UserInfo oAuth2UserInfo = null;
+		
+		if(registrationId.equals("google")) {
+			System.out.println("구글 로그인 요청");
+			oAuth2UserInfo = new GoogleUserInfo(attributes);
+		} 
+		else if(registrationId.equals("facebook")) {
+			System.out.println("페이스북 로그인 요청");
+			oAuth2UserInfo = new FacebookUserInfo(attributes);
+		} 
+		else {
+			System.out.println("우리는 구글과 페이스북 로그인만 지원합니다.");
+		}
+        // </추가하기>
+		
+        // <수정하기>
+		String provider = oAuth2UserInfo.getProvider();
+		String providerId = oAuth2UserInfo.getProviderId();
+		String username = provider+"_"+providerId;
+		String password = bCryptPasswordEncoder.encode("겟인데어");
+		String email = oAuth2UserInfo.getEmail();
+		String role = "ROLE_USER";
+        // </수정하기>
+		
+		User userEntity = userRepsoitory.findByUsername(username);
+		if(userEntity == null) {
+			System.out.println("OAuth로그인이 최초입니다.");
+			userEntity = User.builder()
+								.username(username)
+								.password(password)
+								.email(email)
+								.role(role)
+								.provider(provider)
+								.providerId(providerId)
+								.build();
+			userRepsoitory.save(userEntity);
+		}else {
+			System.out.println("OAuth로그인을 이미 한 적이 있습니다. 당신은 자동회원가입이 되어 있습니다.");
+		}
+		
+		return new PrincipalDetails(userEntity, oauth2User.getAttributes());
+	}
+    ```
+
+### 10-5-3. 결과조회
+1. localhost:8080/logoinForm - 구글 로그인 실행
+2. localhost:8080/logoinForm - 페이스북 로그인 실행
+3. localhost:8080/logoinForm - 일반 회원가입 진행
+3. DB 확인
+    <img src="./img/chapter10_13.png">
+    - OAuth회원가입 유저의 경우 provider 컬럼을 통해 어떤 제공사를 이용했는지를 구분할 수 있다.
+    - 일반 회원가입 유저의 경우 provider가 비워진채로 저장된다.
