@@ -240,6 +240,12 @@
     3. <U>PrincipalDetailsService의 loadUserByUsername()</U> 메서드와 <U>PrincipalOauth2UserService의 loadUser()</U> 메서드 각각 일반로그인과 OAuth로그인시 사용되는 서비스구현체이며, 동시에 PrincipalDetails객체를 반환한다.
     4. 그러므로 일반로그인이든 OAuth로그인이든 Principal객체안에 유저정보가 들어가는 건 동일하며, 어떤 로그인이든 "/user"로 접속했을때 sysout이 콘솔에 찍혀있어야 한다.
     5. 결과는 다음과 같다.
+        ```
+        // 일반로그인
+        principalDetails : User(id=1, username=ssar, password=$2a$10$lV/vBJlBevj/foDZNy3peeCXmSAGUmSIKqyA.oxx7jBABaQiz5N.m, email=test@abc.com, role=ROLE_USER, provider=null, providerId=null, createDate=2023-07-14 16:26:21.551)
+        // 구글로그인
+        principalDetails : User(id=5, username=330067917305-rmbfjubajdiqelvoehsp1ripqoa8k1fn.apps.googleusercontent.com_109696850338476008763, password=$2a$10$iyF.lUPPasFXJLkysTL0LOVUbt/0Llqw6TXfp72o6eZgwW7AU/u5., email=rladmswl1707@gmail.com, role=ROLE_USER, provider=330067917305-rmbfjubajdiqelvoehsp1ripqoa8k1fn.apps.googleusercontent.com, providerId=109696850338476008763, createDate=2023-07-25 13:44:50.376)
+        ```
 
 3. @AuthenticationPrincipal 어노테이션 실행순서
 
