@@ -112,7 +112,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
             - 방법1을 사용하든, 방법2를 사용하든 똑같은 유저Object를 가져오는 것을 확인할 수 있다.
         - 그렇다면, <U>구글로그인</U>을 한 후에 localhost:8080/test/login으로 접근해보자.
 
-            <img src="./img/sec1-11.png">
+            <img src="./img/chapter8_1.png">
         
             ```
             [에러로그]
@@ -208,7 +208,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
     - 결론
         - Authentication객체에는 UserDetails타입과 OAuth2User타입 모두가 들어갈 수 있다.
         
-        <img src="./img/sec1-12.png">
+        <img src="./img/chapter8_2.png">
         
         1. 서버가 갖고 있는 세션 영역 내에서, 스프링 시큐리티는 자신만의 세션을 따로 갖고 있다.
         2. 시큐리티가 관리하는 세션 안에 들어갈 수 있는 타입은 Authentication객체밖에 없다.
@@ -244,4 +244,4 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
         - OAuth2User인터페이스의 메소드들을 override해준다.
         - <U>**이제 일반로그인이든 OAuth로그인이든 PrincipalDetails타입으로 묶어서 받을 수 있음.**</U>
         
-        <img src="./img/sec1-13.png">
+        <img src="./img/chapter8_3.png">

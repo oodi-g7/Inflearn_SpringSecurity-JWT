@@ -2,10 +2,10 @@
 ## 5-1. ROLE_MANAGER, ROLE_ADMIN 유저 생성
 - 회원가입 페이지에서 manager와 admin 계정을 생성한다.
 
-	<img src="./img/sec0-3.png">
+	<img src="./img/chapter5_1.png">
 
 - 워크벤치를 확인해보면 방금 생성한 manager와 admin계정을 확인할 수 있다.
-	<img src="./img/sec0-4.png">
+	<img src="./img/chapter5_2.png">
 
 - IndexController에서 회원가입하는 모든 유저의 권한을 "ROLE_USER"로 설정하게끔 했으니 manager와 admin계정 또한 "ROLE_USER"권한으로 생성되어 있다. 그러므로 권한을 변경해준다. 
 	```sql
@@ -39,7 +39,7 @@
 	- **@Secured** 어노테이션은 개별 매핑 url에 간단하게 권한처리가 가능하도록 도와준다.
 	- 그러므로 "/info"요청은 오직 "ROLE_ADMIN"권한을 가진 계정만 접근이 가능하다.
 	- 만약 ADMIN계정이 아닌 계정으로 접근시 아래와 같은 페이지가 뜬다.
-	<img src="./img/sec0-5.png">
+	<img src="./img/chapter5_3.png">
 
 ### 5-2-2. prePostEnabled 옵션
 - SecurityConfig 내 @EnableGlobalMethodSecurity 어노테이션에 prePostEnabled 옵션을 추가한다.

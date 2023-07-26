@@ -34,7 +34,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
 ## 4-3. UserDetails, UserDetailsService 구현
 ### 4-3-1. 잠깐 서론,
-<img src="./img/sec0-1.png">
+<img src="./img/chapter4_1.png">
 
 1. 앞서 SecurityConfig에 loginProcessingUrl("/login")설정을 통해, 이제 시큐리티는 "/login" 요청이 오면 이를 낚아채서 로그인을 진행시킴
 2. 이때 로그인이 완료되면 Security Session을 만들어 여기에 로그인 정보를 넣어준다.
@@ -43,7 +43,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 5. 그러므로 로그인을 수행하기 위해선 Authentication안에 User정보가 있어야 한다.
 6. 단, Authentication안에 User정보는 UserDetails타입 객체로 저장되어 있어야 한다. 이러한 관계를 정리해보면 아래 그림과 같다.
 
-<img src="./img/sec0-2.png">
+<img src="./img/chapter4_2.png">
 
 - 정리해보자면,
 	- Security Session 영역

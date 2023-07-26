@@ -2,12 +2,12 @@
 ## 6-1. 구글 API 콘솔에 접속 (https://console.cloud.google.com/)
 
 ## 6-2. 새 프로젝트 추가하기    
-<img src="./img/sec1-1.png">
+<img src="./img/chapter6_1.png">
 
 - 새로 추가한 프로젝트를 이용하여 우리가 만든 사이트에 구글 로그인을 추가할 예정!
 
 ## 6-3. OAuth 동의화면 생성하기
-<img src="./img/sec1-2.png">
+<img src="./img/chapter6_2.png">
 
 1. '외부' 선택 후 '만들기' 클릭
 2. 다음 정보입력 후 '저장'
@@ -17,7 +17,7 @@
 3. OAuth 동의화면 생성완료
 
 ## 6-4. 사용자 인증 정보 만들기
-<img src="./img/sec1-3.png">
+<img src="./img/chapter6_3.png">
 
 1. '사용자 인증 정보 만들기' -> 'OAuth 클라이언트 ID' 선택
 2. 다음 정보 입력후 '만들기' -> 사용자 인증정보 생성완료
@@ -32,7 +32,7 @@
         5. 만약 구글 로그인을 전부 다 직접 구현할 것이라면 해당 URI를 자유롭게 작성해도 괜찮지만, <U>**우리는 OAuth2-Client라는 라이브러리를 사용할 것이므로 해당 주소로 고정임. 다른 주소로는 사용불가 !**</U>
 3. 생성된 클라이언트 ID와 클라이언트 보안 비밀번호 따로 저장해두기. 유출안되도록 조심 !
 
-    <img src="./img/sec1-4.png">
+    <img src="./img/chapter6_4.png">
 ---
 #### ※ [참고] OAuth2-Client 라이브러리 ※
 - 리디렉션 URI 작성규칙 : 도메인주소 + /login/oauth2/code/[google | facebook | ···]
@@ -90,11 +90,11 @@
 4. localhost:8080/loginForm 으로 접속
     - 구글 로그인 버튼 선택
 
-    <img src="./img/sec1-5.png">
+    <img src="./img/chapter6_5.png">
 
     - 404 페이지 확인
     
-    <img src="./img/sec1-6.png">
+    <img src="./img/chapter6_6.png">
 
 5. SecurityConfig 설정 추가하기
     ```java
@@ -115,20 +115,20 @@
 6. 다시 localhost:8080/loginForm 으로 접속
     - 구글 로그인 버튼 선택
 
-    <img src="./img/sec1-5.png">
+    <img src="./img/chapter6_5.png">
 
     - 구글 로그인 Form 확인
 
-    <img src="./img/sec1-7.png">
+    <img src="./img/chapter6_7.png">
 
     - 구글 로그인 완료 후 인덱스 페이지로 이동 확인
         - SecurityConfig.class에서 .defaultSuccessUrl("/") 설정 참고
 
-    <img src="./img/sec1-8.png">
+    <img src="./img/chapter6_8.png">
 
     - "/manager" 페이지로 이동
 
-    <img src="./img/sec1-9.png">
+    <img src="./img/chapter6_9.png">
 
     - "/manager" 페이지로 이동시 403페이지를 만날 수 있는데, 이는 구글 로그인은 인증 완료되었지만 해당 로그인계정에 대한 세션정보가 없어서 접근이 불가능한 것! 
     - <U>**(즉, 구글 로그인이 완료된 뒤에 "후처리"가 필요함)**</U>
@@ -170,7 +170,7 @@
 
 - 작동방식
 
-    <img src="./img/sec1-10.png">
+    <img src="./img/chapter6_10.png">
 
     1. Client(개인서비스)는 Resource Owner(사용자)를 대신해 로그인함. 이때 필요한 정보를 Resource Server(Kakao, Naver, …)에서 얻어 서로 비교하여 유효성을 판단한다.
     2. Client가 유저의 로그인정보/ 자원을 Resource Server에 요청하여 대신 로그인하는 것.

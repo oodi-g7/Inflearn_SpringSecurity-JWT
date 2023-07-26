@@ -2,7 +2,7 @@
 ## 9-1. PrincipalDetails 클래스의 목적
 ### 9-1-1. 그림1
 
-<img src="./img/sec1-14.png">
+<img src="./img/chapter9_1.png">
 
 1. Security Session 영역에는 Authentication객체만 접근이 가능하다.
 2. Authentication객체는 UserDetails타입(일반로그인)과 OAuth2User타입(oauth로그인)만 접근이 가능하다.
@@ -10,7 +10,7 @@
 4. 사용자의 정보가 담긴 User객체는 UserDetails또는 OAuth2User타입이 아니므로, Authentication객체만 접근가능한 Security세션안에 들어갈 수 없다.
 
 ### 9-1-2. 그림2
-<img src="./img/sec1-15.png">
+<img src="./img/chapter9_2.png">
 
 1. UserDetails와 OAuth2User를 implements한 PrincipalDetails 클래스를 생성한다.
 2. 해당 클래스에 User객체를 담아준다. (아래 코드 참고)
@@ -36,7 +36,7 @@
     ```
 
 ### 9-1-3. 그림3
-<img src="./img/sec1-16.png">
+<img src="./img/chapter9_3.png">
 
 1. 생성한 PrincipalDetails 클래스는 User객체를 갖고 있다.
 2. 또한 PrincipalDetails 클래스는 UserDetails, OAuth2User 타입 모두에 해당하므로, Authentication객체만 접근가능한 Security Session에 접근이 가능하다.
@@ -46,7 +46,7 @@
 ### 9-2-1. 구글서버로부터 전달받은 사용자 프로필 타입 : Map<String, Object>
 - 구글로그인시, 구글서버로부터 받아오는 사용자 프로필 정보는 Map<String, Object> 타입이다.
     1. IndexController - testOauthLogin()메소드에서 oauth로그인시 사용자 프로필정보를 받아오는 .getAttributes() 의 리턴타입을 보면 Map<String, Object>이다.
-    <img src="./img/sec1-17.png">
+    <img src="./img/chapter9_4.png">
 
     2. 아래 콘솔에 찍힌 유저정보역시 Map<String, Object> 타입으로 출력되는 것을 확인할 수 있다.
          ```
@@ -137,7 +137,7 @@
             ```
     - 이를 정리하자면 다음과 같다.
         
-        <img src="./img/sec1-18.png">
+        <img src="./img/chapter9_5.png">
         
         - 일반로그인시에는 User정보(DB에 저장되어 있는)를 PrincipalDetails객체에 담아서 SecuritySession에 넣어주고
         - OAuth로그인시에는 
@@ -249,7 +249,7 @@
 
 3. @AuthenticationPrincipal 어노테이션 실행순서
 
-    <img src="./img/sec1-19.png">
+    <img src="./img/chapter9_6.png">
     
     1. 사용자가 로그인을 요청한다.
     2. SecurityConfig.class에 loginProcessingUrl로 설정해둔 "/login"이 요청된다.
