@@ -192,7 +192,7 @@
             
             // 이제 회원가입을 강제로 진행해볼 예정
             // 사용자 프로필정보를 DB에 저장하기 위해 가공해준다.
-            String provider = userRequest.getClientRegistration().getClientId(); // google
+            String provider = userRequest.getClientRegistration().getRegistrationId(); // google
             String providerId = oauth2User.getAttribute("sub"); // 109696850338476008763, google의 pk
             String username = provider+"_"+providerId; // google_109696850338476008763
             String password = bCryptPasswordEncoder.encode("겟인데어");

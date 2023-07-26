@@ -34,7 +34,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
 		System.out.println("getAttributes : " + oauth2User.getAttributes());
 		
 		// 회원가입을 강제로 진행해볼 예정
-		String provider = userRequest.getClientRegistration().getClientId(); // google
+		String provider = userRequest.getClientRegistration().getRegistrationId(); // google
 		String providerId = oauth2User.getAttribute("sub"); // 109696850338476008763
 		// oauth로그인시 username과 password 모두 사용자가 넣어주지 않았기때문에 우리가 임의로 값을 생성, 조합하여 DB에 저장
 		String username = provider+"_"+providerId; // google_109696850338476008763
