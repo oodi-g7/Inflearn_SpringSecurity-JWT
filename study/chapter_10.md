@@ -48,15 +48,15 @@
 ```java
 @Override
 public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-    System.out.println("getClientRegistration : " + userRequest.getClientRegistration()); // 페이스북 로그인시 확인할 부분
-    System.out.println("getAccessTokenValue : " + userRequest.getAccessToken().getTokenValue()); // 페이스북 로그인시 확인할 부분
+    System.out.println("getClientRegistration : " + userRequest.getClientRegistration()); // 확인할 부분
+    System.out.println("getAccessTokenValue : " + userRequest.getAccessToken().getTokenValue()); // 확인할 부분
     
     OAuth2User oauth2User = super.loadUser(userRequest);
-    System.out.println("getAttributes : " + oauth2User.getAttributes()); // 페이스북 로그인시 확인할 부분
+    System.out.println("getAttributes : " + oauth2User.getAttributes()); // 확인할 부분
     
     String provider = userRequest.getClientRegistration().getRegistrationId();
     String providerId = oauth2User.getAttribute("sub");
-    String username = provider+"_"+providerId; // google_109696850338476008763
+    String username = provider+"_"+providerId;
     String password = bCryptPasswordEncoder.encode("겟인데어");
     String email = oauth2User.getAttribute("email");
     String role = "ROLE_USER";
@@ -138,7 +138,7 @@ Hibernate: insert into User (createDate, email, password, provider, providerId, 
     확인해보면 providerId와 username에 null값이 포함되어있다. 그 이유는,
     ```java
     // 자바코드
-    String provider = userRequest.getClientRegistration().getRegistrationId(); 
+    String provider = userRequest.getClientRegistration().getRegistrationId(); // facebook 
     String providerId = oauth2User.getAttribute("sub"); // 이 부분 주목 !
     
     String username = provider+"_"+providerId;
@@ -149,7 +149,7 @@ Hibernate: insert into User (createDate, email, password, provider, providerId, 
     ```
     에서 알 수 있듯이, 페이스북에는 sub이라는 key값이 없으므로 null값이 들어간 것이다. 페이스북에는 sub가 아니라 id라는 key명을 사용해주어야 한다.
     
-    ### ※ 결론적으로, 페이스북 로그인은 정상작동하지만 로그인 사이트가 변경될때마다 속성 key값이 달라지므로 유지보수 측면에서 좋지 않은 코드이다. → 즉, 리팩토링이 필요하다 ! ※
+    ### ※ 결론적으로, 페이스북 로그인은 정상작동하지만 로그인 제공사가 변경될 때마다 속성 key값이 달라지므로 유지보수 측면에서 좋지 않은 코드이다. → 즉, 리팩토링이 필요하다 ! ※
 
 ## 10-5. PrincipalOauth2UserService 코드 리팩토링
 ### 10-5-1. OAuth2USerInfo 인터페이스 및 구현체 생성
@@ -244,7 +244,7 @@ Hibernate: insert into User (createDate, email, password, provider, providerId, 
 		OAuth2User oauth2User = super.loadUser(userRequest);
 		System.out.println("getAttributes : " + oauth2User.getAttributes());
 		
-        // <추가하기>
+        /** <추가하기> **/
 		Map<String, Object> attributes = oauth2User.getAttributes();
 		String registrationId = userRequest.getClientRegistration().getRegistrationId();
 		OAuth2UserInfo oAuth2UserInfo = null;
@@ -260,16 +260,16 @@ Hibernate: insert into User (createDate, email, password, provider, providerId, 
 		else {
 			System.out.println("우리는 구글과 페이스북 로그인만 지원합니다.");
 		}
-        // </추가하기>
+        /** </추가하기> **/
 		
-        // <수정하기>
+        /** <수정하기> **/
 		String provider = oAuth2UserInfo.getProvider();
 		String providerId = oAuth2UserInfo.getProviderId();
 		String username = provider+"_"+providerId;
 		String password = bCryptPasswordEncoder.encode("겟인데어");
 		String email = oAuth2UserInfo.getEmail();
 		String role = "ROLE_USER";
-        // </수정하기>
+        /** </수정하기> **/
 		
 		User userEntity = userRepsoitory.findByUsername(username);
 		if(userEntity == null) {
@@ -292,9 +292,9 @@ Hibernate: insert into User (createDate, email, password, provider, providerId, 
     ```
 
 ### 10-5-3. 결과조회
-1. localhost:8080/logoinForm - 구글 로그인 실행
-2. localhost:8080/logoinForm - 페이스북 로그인 실행
-3. localhost:8080/logoinForm - 일반 회원가입 진행
+1. localhost:8080/logoinForm → 구글 로그인 실행
+2. localhost:8080/logoinForm → 페이스북 로그인 실행
+3. localhost:8080/logoinForm → 일반 회원가입 진행
 3. DB 확인
     <img src="./img/chapter10_13.png">
     - OAuth회원가입 유저의 경우 provider 컬럼을 통해 어떤 제공사를 이용했는지를 구분할 수 있다.
