@@ -136,25 +136,25 @@ Caused by: java.lang.IllegalStateException: Provider ID must be specified for cl
                 user-info-uri: https://openapi.naver.com/v1/nid/me
                 user-name-attribute: response
     ```
-    - authorization-uri : 해당 주소로 요청시, 네이버 로그인 창이 생성됨
+    1. **authorization-uri** : 해당 주소로 요청시, 네이버 로그인 창이 생성됨
 
         <img src="./img/chapter11_8.png">
 
-    - token-uri : 인증 토큰을 받기 위해선 해당 주소로 요청
+    2. **token-uri** : 인증 토큰을 받기 위해선 해당 주소로 요청
 
         <img src="./img/chapter11_9.png">
 
-    - user-info-uri : 로그인한 사용자의 프로필 정보를 받기 위해선 해당 주소로 요청
+    3. **user-info-uri** : 로그인한 사용자의 프로필 정보를 받기 위해선 해당 주소로 요청
 
         <img src="./img/chapter11_10.png">
 
-    - user-name-attribute : 회원정보를 json으로 받는데, response라는 key값으로 네이버가 리턴해줌.
+    4. **user-name-attribute** : 회원정보를 json으로 받는데, response라는 key값으로 네이버가 리턴해줌.
 
         <img src="./img/chapter11_11.png">
 
         - user-info-uri를 이용하여 사용자의 프로필 정보를 받아올 때, response 안에 모든 정보가 담겨있음을 확인할 수 있다.
 
-    - [참고] [네이버 개발자 API 문서](https://developers.naver.com/docs/login/devguide/devguide.md#2-2-1-%EC%86%8C%EC%85%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8)
+    - **[참고]** [네이버 개발자 API 문서](https://developers.naver.com/docs/login/devguide/devguide.md#2-2-1-%EC%86%8C%EC%85%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8)
 
 ## 11-2. Naver로그인 실행하기
 ### 11-2-1. loginForm.html에 네이버 로그인 추가하기
@@ -169,12 +169,13 @@ Caused by: java.lang.IllegalStateException: Provider ID must be specified for cl
     </form>
     <a href="/oauth2/authorization/google">구글 로그인</a>
     <a href="/oauth2/authorization/facebook">페이스북 로그인</a>
-    <a href="/oauth2/authorization/naver">네이버 로그인</a>
+    <a href="/oauth2/authorization/naver">네이버 로그인</a> <!--추가해주기-->
     <a href="/joinForm">회원가입을 아직 하지 않으셨나요??</a>
 </body>
 ```
-- /oauth2/authorization/naver : OAuth-Client 라이브러리 사용시 따라야 할 기본주소. ("/oauth2/authorization/"뒤에 registrationId(google, facebook, twitter, ... , naver)를 작성해주어야 한다)
+- "/oauth2/authorization/naver" : OAuth-Client 라이브러리 사용시 따라야 할 기본주소. ("/oauth2/authorization/"뒤에 registrationId(google, facebook, twitter, ... , naver)를 작성해주어야 한다)
 - 사용자가 네이버 로그인 링크를 클릭했을때 실제로 호출되는 주소는 앞서 application.yml에 작성했던 authorization-uri 주소가 호출된다.
+    - authorization-uri: https://nid.naver.com/oauth2.0/authorize
 
 ### 11-2-2. localhost:8080/loginForm 접속 후 네이버 로그인 실행하기
 
@@ -198,7 +199,7 @@ getAttributes : {resultcode=00, message=success, response={id=vDKkYGMQnadXewU1jO
     getAttributes : {resultcode=00, message=success, response={id=vDKkYGMQnadXewU1jOhW4_kgXbIrUxgiO2BGAx7TPF4, email=rladmswl1707@naver.com, name=김은지}}
     ```
     - getAttributes를 확인해보면 response라는 key값 안에 사용자 프로필정보(id, email, name)가 담겨있음을 확인할 수 있다.   
-    11-1-8 에서 user-name-attribute: response 로 설정했던 이유가 바로 이것때문 !
+    (11-1-8)에서 user-name-attribute: response 로 설정했던 이유가 바로 이것 때문 !
 
 ### 11-2-3. PrincipalOauth2USerService의 loadUser() 함수 수정하기
 ```java
@@ -223,7 +224,7 @@ getAttributes : {resultcode=00, message=success, response={id=vDKkYGMQnadXewU1jO
     ```
     response={id=vDKkYGMQnadXewU1jOhW4_kgXbIrUxgiO2BGAx7TPF4, email=rladmswl1707@naver.com, name=김은지}
     ```
-    - 각 정보의 key값은 id, email, name 이다.
+    - 각 정보의 key값은 <U>**id, email, name**</U> 이다.
 
 ```java
 public class NaverUserInfo implements OAuth2UserInfo {
