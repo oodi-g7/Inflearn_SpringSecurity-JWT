@@ -30,8 +30,8 @@
 ### Section 2. 스프링 시큐리티 웹 보안 이해
 - [12강. JWT를 이해하기 전 세션에 대해 알아보자](./study/chapter_12.md)
 - [13강. JWT를 이해하기 전 TCP에 대해서 알아보자](./study/chapter_13.md)
-- 14강. JWT를 이해하기 전 CIA에 대해서 알아보자
-- 15강. JWT를 이해하기 전 RSA에 대해서 알아보자
+- [14강. JWT를 이해하기 전 CIA에 대해서 알아보자](./study/chapter_14.md)
+- [15강. JWT를 이해하기 전 RSA에 대해서 알아보자](./study/chapter_15.md)
 - 16강. JWT를 이해하기전 RFC문서란
 ### Section 3. 스프링 시큐리티 JWT 서버 구축
 - 17강. JWT 구조 이해
