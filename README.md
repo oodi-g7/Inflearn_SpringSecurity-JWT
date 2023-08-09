@@ -35,7 +35,7 @@
 - [16강. JWT를 이해하기전 RFC문서란](./study/chapter_16.md)
 ### Section 3. 스프링 시큐리티 JWT 서버 구축
 - [17강. JWT 구조 이해](./study/chapter_17.md)
-- 18강. JWT 프로젝트 세팅
+- [18강. JWT 프로젝트 세팅](./study/chapter_18.md)
 - 19강. JWT를 위한 yml파일 세팅
 - 20강. JWT를 위한 security 설정
 - 21강. JWT Bearer 인증 방식
