@@ -95,7 +95,15 @@ public class PrincipalDetails implements UserDetails{
 		return user.getPassword();
 	}
 
-	// User의 이름를 리턴
+	// User의 ID를 리턴
+	/*
+	 * [security "username"]
+	 * 시큐리티에선 회원아이디라는 용어 대신 username이라는 단어를 사용한다.
+	 * username이라는 단어 자체가 회원을 구별할 수 있는 식별 데이터를 의미한다.
+	 * 문자열로 처리하는 점은 같지만 일반적으로 사용하는 회원의 이름이 아닌, id에 해당한다.
+	 * 
+	 * 따라서 getUsername()는 유저의 이름을 반환하는것이 아닌 유저의 id를 반환한다.
+	 * */ 
 	@Override
 	public String getUsername() {
 		return user.getUsername();
