@@ -36,8 +36,8 @@
 ### Section 3. 스프링 시큐리티 JWT 서버 구축
 - [17강. JWT 구조 이해](./study/chapter_17.md)
 - [18강. JWT 프로젝트 세팅](./study/chapter_18.md)
-- 19강. JWT를 위한 yml파일 세팅
-- 20강. JWT를 위한 security 설정
+- [19강. JWT를 위한 yml파일 세팅](./study/chapter_19.md)
+- [20강. JWT를 위한 security 설정](./study/chapter_20.md)
 - 21강. JWT Bearer 인증 방식
 - 22강. JWT Filter 등록 테스트
 - 23강. JWT 임시 토큰 만들어서 테스트 해보기
