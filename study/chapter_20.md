@@ -61,12 +61,12 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.csrf().disable();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		http.csrf().disable(); // (1)
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // (2)
 		.and()
-		.formLogin().disable()
-		.httpBasic().disable()
-		.authorizeRequests()
+		.formLogin().disable() // (3)
+		.httpBasic().disable() // (4)
+		.authorizeRequests() // (5)
 		    .antMatchers("/api/v1/user/**")
             .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
             .antMatchers("/api/v1/manager/**")
@@ -141,11 +141,11 @@ public class CorsConfig {
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);  
-		config.addAllowedOrigin("*");
-		config.addAllowedHeader("*");
-		config.addAllowedMethod("*");
-		source.registerCorsConfiguration("/api/**", config);
+		config.setAllowCredentials(true); // (1)  
+		config.addAllowedOrigin("*"); // (2)
+		config.addAllowedHeader("*"); // (3)
+		config.addAllowedMethod("*"); // (4)
+		source.registerCorsConfiguration("/api/**", config); // (5)
 		
 		return new CorsFilter(source);
 	}
@@ -211,7 +211,7 @@ public class SecurityConfig {
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-		.addFilter(corsFilter) // 필터에 cors설정값 등록
+		.addFilter(corsFilter) // (1) 필터에 cors설정값 등록
 		.formLogin().disable()
 		.httpBasic().disable()
 		.authorizeRequests()
