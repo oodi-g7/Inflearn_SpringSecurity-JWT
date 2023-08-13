@@ -28,15 +28,14 @@ public class SecurityConfig {
 		.formLogin().disable() // JWT 로그인시 필수 설정, JWT서버니까 formLogin을 사용하지 않음. formLogin => Spring Security에서 제공하는 인증방식
 		.httpBasic().disable() // 기본적인  http 로그인 방식은 사용하지 않는다.
 		.authorizeRequests()
-		.antMatchers("/api/v1/user/**")
-		.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-		.antMatchers("/api/v1/manager/**")
-		.access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-		.antMatchers("/api/v1/admin/**")
-		.access("hasRole('ROLE_ADMIN')")
-		.anyRequest().permitAll();
+			.antMatchers("/api/v1/user/**")
+			.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+			.antMatchers("/api/v1/manager/**")
+			.access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+			.antMatchers("/api/v1/admin/**")
+			.access("hasRole('ROLE_ADMIN')")
+			.anyRequest().permitAll();
 		
 		return http.build();
 	}
-
 }

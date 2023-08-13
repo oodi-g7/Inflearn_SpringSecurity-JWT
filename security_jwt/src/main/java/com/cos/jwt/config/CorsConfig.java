@@ -9,6 +9,7 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 public class CorsConfig {
 
+	// 이렇게 설정만 해서 끝나는 것이 아니라, filter에 등록을 해주어야 함  => SecurityConfig에 꼭 등록해주기
 	@Bean
 	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -27,9 +28,7 @@ public class CorsConfig {
 		// 모든 post, get, put, delete, patch 요청을 허용하겠다.
 		config.addAllowedMethod("*");
 		
-		// 이렇게 설정만 해서 끝나는 것이 아니라, filter에 등록을 해주어야 함 
-		
-		source.registerCorsConfiguration("/api/**", config);
+		source.registerCorsConfiguration("/api/**", config); 
 		
 		return new CorsFilter(source);
 	}
