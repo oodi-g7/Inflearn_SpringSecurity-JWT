@@ -97,7 +97,8 @@ public class SecurityConfig {
     .formLogin().disable()
     ```
     : **JWT 로그인 시 필수 설정값**   
-    : formLogin = Spring Security에서 제공하는 인증방식. JWT서버니까 formLogin을 사용하지 않겠다.
+    : formLogin = Spring Security에서 제공하는 인증방식. JWT서버니까 formLogin을 사용하지 않겠다.   
+    : \<form\>태그를 이용한 로그인방식을 사용하지 않겠다.
 
 4. 
     ```java
