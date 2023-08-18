@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
+import com.cos.jwt.filter.MyFilter1;
 import com.cos.jwt.filter.MyFilter3;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,8 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.addFilterBefore(new MyFilter3(), BasicAuthenticationFilter.class);
+		//http.addFilterBefore(new MyFilter3(), BasicAuthenticationFilter.class);
+		http.addFilter(new MyFilter1());
 		http.csrf().disable(); // JWT 로그인시 필수 설정
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT 로그인시 필수 설정, 세션을 사용하지 않겠다. (stateless 무상태성 서버로 만들겠다.)
 		.and()

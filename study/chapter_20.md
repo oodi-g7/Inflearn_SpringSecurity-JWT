@@ -117,9 +117,9 @@ public class SecurityConfig {
 		.access("hasRole('ROLE_ADMIN')")
 		.anyRequest().permitAll();
     ```
-    : "/api/v1/user/**" 는 ROLE_USER, ROLE_MANAGER, ROLE_ADMIN 모든 권한 접근가능   
-    : "/api/v1/manager/**" 는 ROLE_MANAGER, ROLE_ADMIN 권한만 접근가능   
-    : "/api/v1/admin/**" 는 ROLE_ADMIN 권한만 접근가능   
+    : "/api/v1/user/\*\*" 는 ROLE_USER, ROLE_MANAGER, ROLE_ADMIN 모든 권한 접근가능   
+    : "/api/v1/manager/\*\*" 는 ROLE_MANAGER, ROLE_ADMIN 권한만 접근가능   
+    : "/api/v1/admin/\*\*" 는 ROLE_ADMIN 권한만 접근가능   
     : 그 외 다른 요청은 권한 상관없이 아무나 접근 가능
 
 #### ※ csrf 비활성화, 세션 비활성화, form로그인 비활성화 이렇게 3가지는 전부 JWT를 구현하기 위해 필수적으로 설정해야 하는 요소이다.
