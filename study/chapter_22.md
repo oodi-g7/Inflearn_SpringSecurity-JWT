@@ -67,11 +67,11 @@ org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating
     ```
     The Filter class com.cos.jwt.filter.MyFilter1 does not have a registered order and cannot be added without a specified order. Consider using addFilterBefore or addFilterAfter instead.
     ```
-    - 에러를 살펴보면, 앞서 등록한 MyFilter1는 SecurityFilterChain에 등록할 수 없다. 그 이유는 MyFilter1의 타입이 'SecurityFilter'가 아니라 'Filter'이기 때문.
+    - 에러를 살펴보면, 앞서 등록한 MyFilter1는 SecurityFilterChain에 등록할 수 없다고 출력된다. 그 이유는 MyFilter1의 타입이 'SecurityFilter'가 아니라 'Filter'이기 때문이다.
         - 시큐리티 필터에 해당 필터를 등록하고 싶으면 'addFilter'가 아닌,   
         '**addFilterBefore**' 또는 '**addFilterAfter**'를 이용해서 시큐리티 필터가 시작되기 전 또는 이후에 해당 필터를 걸어주어야 한다.
-        - addFilterBefore와 addFilterAfter   
-        : SecurityFilterChain에 등록된 필터 중 특정 필터를 선택하여, 선택한 필터가 시작되기 전/후에 커스텀한 필터를 실행시킬 수 있게 해줌. (가장 먼저 실행가능, SecurityFilterChain이 모두 실행된 후에 실행하는 것도 가능!)
+        - [※참고] addFilterBefore와 addFilterAfter   
+        : SecurityFilterChain에 등록된 필터 중 특정 필터를 선택하여, 선택한 필터가 시작되기 전/후에 커스텀한 필터를 실행시킬 수 있게 해줌. (가장 먼저 실행하는 것도 가능, SecurityFilterChain이 모두 실행된 후에 실행하는 것도 가능!)
 
 ### 22-2-2. http.addFilterBefore 사용
 ```java
@@ -120,7 +120,7 @@ public class SecurityConfig {
 ```java
 http.addFilterBefore(new MyFilter1(), BasicAuthenticationFilter.class);
 ```
-- 앞서 SecurityConfig 파일에 추가해둔 설정정보는 삭제해준다.
+- 앞서 SecurityConfig 파일에 추가해둔 위 설정정보는 삭제해준다.
 
 ### 22-3-2. FilterConfig 생성
 ```java
@@ -166,7 +166,7 @@ public class FilterConfig {
 	}
 	
 	@Bean
-	public FilterRegistrationBean<MyFilter2> filter2(){
+	public FilterRegistrationBean<MyFilter2> filter2(){ // 추가
 		FilterRegistrationBean<MyFilter2> bean = new FilterRegistrationBean<>(new MyFilter2());
 		bean.addUrlPatterns("/*"); 
 		bean.setOrder(1); 
@@ -185,6 +185,7 @@ public class FilterConfig {
 2. 커스텀한 필터는 SecurityFilterChain에 등록된 필터가 전부 다 실행된 이후에 동작한다.
     ```java
     // 2-1. MyFilter3 생성
+	
     public class MyFilter3 implements Filter{
 
         @Override
@@ -197,6 +198,7 @@ public class FilterConfig {
     ```
     ```java
     // 2-2. SecurityConfig에 MyFilter3 등록
+
     @Configuration
     @EnableWebSecurity
     @RequiredArgsConstructor
@@ -228,9 +230,10 @@ public class FilterConfig {
     ```
     ```
     // 2-3. 실행결과
+
     필터3
     필터1
     필터2
     ```
     - SecurityFilterChain에 등록한 필터3이 가장 먼저 실행되는 것을 통해, SecurityFilterChain이 모두 실행된 이후 커스텀한 필터가 실행됨을 알 수 있다.
-3. 이와 같은 필터를 이용하여, JWT토큰처리를 할 예정.
+3. 이제 이와 같은 필터를 이용하여 JWT 토큰 처리를 할 예정 !
