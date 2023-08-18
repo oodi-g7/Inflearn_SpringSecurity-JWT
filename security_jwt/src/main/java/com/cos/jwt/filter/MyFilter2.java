@@ -16,5 +16,4 @@ public class MyFilter2 implements Filter{
 		System.out.println("필터2");
 		chain.doFilter(request, response);
 	}
-
 }
