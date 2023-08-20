@@ -40,7 +40,7 @@
 - [20강. JWT를 위한 security 설정](./study/chapter_20.md)
 - [21강. JWT Bearer 인증 방식](./study/chapter_21.md)
 - [22강. JWT Filter 등록 테스트](./study/chapter_22.md)
-- 23강. JWT 임시 토큰 만들어서 테스트 해보기
+- [23강. JWT 임시 토큰 만들어서 테스트 해보기](./study/chapter_23.md)
 - 24강. JWT를 위한 로그인 시도
 - 25강. JWT를 위한 강제 로그인 진행
 - 26강. JWT토큰 만들어서 응답하기

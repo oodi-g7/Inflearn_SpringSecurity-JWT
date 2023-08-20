@@ -27,7 +27,7 @@ public class MyFilter3 implements Filter{
 			System.out.println("POST 요청됨");
 			String headerAuth = req.getHeader("Authorization"); // Authorization이라는 header를 받아옴
 			System.out.println(headerAuth);
-			System.out.println("필터1");
+			System.out.println("필터3");
 			
 			if(headerAuth.equals("cos")) {
 				chain.doFilter(req, res);
