@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
@@ -23,9 +22,11 @@ public class SecurityConfig {
 	
 	private final CorsFilter corsFilter;
 	
+	AuthenticationManager authenticationManager;
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
+//		http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
 		http.csrf().disable(); // JWT 로그인시 필수 설정
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT 로그인시 필수 설정, 세션을 사용하지 않겠다. (stateless 무상태성 서버로 만들겠다.)
 		.and()
@@ -34,7 +35,7 @@ public class SecurityConfig {
 							   // 다른 방법으로는 @CrossOrigin를 사용하는 방법도 있는데 이건 인증이 필요없을 경우에만 사용이 가능하다. 인증이 필요한 경우라면 이처럼 시큐리티 필터에 직접 등록해주어야 한다.
 		.formLogin().disable() // JWT 로그인시 필수 설정, JWT서버니까 formLogin을 사용하지 않음. formLogin => Spring Security에서 제공하는 인증방식
 		.httpBasic().disable() // 기본적인  http 로그인 방식은 사용하지 않는다.
-		.addFilter(new JwtAuthenticationFilter()) // UsernamePasswordAuthenticationFilter 필터를 등록
+		.addFilter(new JwtAuthenticationFilter(authenticationManager)) // UsernamePasswordAuthenticationFilter 필터를 등록
 		.authorizeRequests()
 			.antMatchers("/api/v1/user/**")
 			.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
