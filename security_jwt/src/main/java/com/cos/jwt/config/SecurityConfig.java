@@ -3,15 +3,14 @@ package com.cos.jwt.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
 import com.cos.jwt.config.jwt.JwtAuthenticationFilter;
-import com.cos.jwt.filter.MyFilter3;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +22,12 @@ public class SecurityConfig {
 	private final CorsFilter corsFilter;
 	
 	AuthenticationManager authenticationManager;
+	
+	@Bean
+	public AuthenticationManager authenticationManager
+		(AuthenticationConfiguration authenticationConfiguration)throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
