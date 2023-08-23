@@ -211,3 +211,39 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     - 6-4. loadUserByUsername() 함수가 실행되어 반환된 PrincipalDetails객체(유저정보가 담긴)를 권한관리를 위해 시큐리티 세션에 담아준다. 
         - ※ 만약 사용자의 권한별로 접근제어를 할 필요가 없다면 굳이 시큐리티 세션에 담아주지 않아도 된다. 시큐리티 세션에 유저정보를 담는 이유는 **only 권한관리**를 위해서일 뿐 ! ※
     - 6-4. 정상적으로 로그인이 완료되었으니, 우리는 JWT토큰을 만들어 사용자에게 응답해주면 된다.
+
+## (+) 회원가입 로직 추가
+### 1. SecurityJwtApplication에 BCryptPasswordEncoder 추가
+```java
+@SpringBootApplication
+public class SecurityJwtApplication {
+
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	public static void main(String[] args) {
+		SpringApplication.run(SecurityJwtApplication.class, args);
+	}
+
+}
+```
+
+### 2. RestApiController에 회원가입 로직 추가
+```java
+@Autowired
+private UserRepository userRepo;
+
+@PostMapping("/join")
+public String join(@RequestBody User user) {
+    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    user.setRoles("ROLE_USER");
+    userRepo.save(user);
+    
+    return "회원가입완료";
+}
+```
+
+### 3. 포스트맨으로 테스트하기
+<img src="./img/chapter24_5.png">
