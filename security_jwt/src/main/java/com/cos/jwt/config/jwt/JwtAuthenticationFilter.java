@@ -59,28 +59,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			UsernamePasswordAuthenticationToken authenticationToken =
 					new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 			
-			// 3. loadUserByUsername()함수가 실행되어 반환된 PrincipalDetails객체(유저정보가담긴)를 시큐리티 세션에 담고(권환관리를 위해서)
-			// PrincipalDetailsService의 loadUserByUsername() 함수가 실행된 후 정상이면 authentication이 리턴됨(로그인정보)
-			// authentication에 값이 담기면 DB에 있는 username과 password가 일치한다는 의미
+			// 3. authenticationManager로 로그인 시도를 하면 PrincipalDetailsService가 호출되어 loadUserByUsername()함수가 실행된다.
+			// loadUserByUsername()함수가 실행되어 로그인 정보가 정확하면, 반환된 PrincipalDetails객체(로그인한 유저정보)는 authentication변수에 담긴다.
 			Authentication authentication = 
 					authenticationManager.authenticate(authenticationToken);
 			
+			// 4. authentication변수가 가진 Principal객체를 꺼내어 principalDetails변수에 담아준다.
 			PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
-			System.out.println("로그인 완료됨 : " + principalDetails.getUser().getUsername()); // 로그인이 정상적으로 되었다는 뜻.
-			// authentication객체를 session영역에 저장을 해야하고 그 방법이 return 해주면 됨.
-			// 리턴의 이유는 권한 관리를 security가 대신 해주기 때문에 편하려고 하는거임
-			// 굳이 JWT토큰을 사용하면서 세션을 만들 이유가 없음. 근데 단지 권한처리때문에 session에 넣는거
+			// 5. principalDetails변수에 값이 담겨있다면 로그인이 정상적으로 이루어졌다는 뜻.
+			System.out.println("로그인 완료됨 : " + principalDetails.getUser().getUsername());
 			
-			// 세션에 넣기전에 마지막으로 할 일은 JWT토큰을 만들어야 함 !!
-
-			// 4. JWT토큰을 만들어서 응답해주면 됨
 			
+			// 6. JWT 토큰 만들기
+			
+			
+			// 7. authentication객체를 return해주면 시큐리티 세션영역에 저장됨.
+			// 시큐리티 세션영역에 저장해주는 이유는 권한 관리를 security가 대신 해주기 때문에 편리하기 때문.
+			// JWT토큰을 사용하면서 시큐리티 세션을 만들 이유는 없음. 단지 권한처리를 편리하게 하기 위해 security session에 저장하는 것이므로 생략가능함
 			return authentication;
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("=================================");
 		
 		return null;
 	}

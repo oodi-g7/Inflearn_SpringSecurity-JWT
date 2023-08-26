@@ -233,16 +233,20 @@ public class SecurityJwtApplication {
 
 ### 2. RestApiController에 회원가입 로직 추가
 ```java
-@Autowired
-private UserRepository userRepo;
+@RestController
+@RequiredArgsConstructor
+public class RestApiController {
+	private final UserRepository userRepo;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-@PostMapping("/join")
-public String join(@RequestBody User user) {
-    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-    user.setRoles("ROLE_USER");
-    userRepo.save(user);
-    
-    return "회원가입완료";
+	@PostMapping("/join")
+	public String join(@RequestBody User user) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		user.setRoles("ROLE_USER");
+		userRepo.save(user);
+		
+		return "회원가입완료";
+	}
 }
 ```
 
