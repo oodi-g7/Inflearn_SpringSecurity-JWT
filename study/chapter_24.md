@@ -1,6 +1,6 @@
 # 24강. JWT를 위한 로그인 시도
 
-- 강의에 앞서 이전에 SecurityConfig에서 등록해준 필터부분은 주석처리 해준다.
+- 강의에 앞서 이전에 SecurityConfig에서 등록해준 필터부분은 제거해준다.
     ```java
     @Configuration
     @EnableWebSecurity
@@ -11,8 +11,7 @@
         
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-            // 주석처리해주기
-    //      http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class);
+    		//http.addFilterBefore(new MyFilter3(), SecurityContextPersistenceFilter.class); → 제거
             http.csrf().disable();
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
@@ -139,27 +138,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     4. 우리는 JWT를 이용하므로 formLogin방식은 여전히 필요없지만, UsernamePasswordAuthenticationFilter 필터는 필요한 상황
     5. 따라서 SecurityConfig에 해당 필터를 등록해주어야 한다.
 
-### 24-2-2. SecurityConfig에 UsernamePasswordAuthenticationFilter 필터 등록
+### 24-2-2. SecurityConfig에 UsernamePasswordAuthenticationFilter 필터 등록 및 리팩토링
 ```java
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 	
-	private final CorsFilter corsFilter;
+	//private final CorsFilter corsFilter; → 제거
 	
-	AuthenticationManager authenticationManager;
+	@Autowired private UserRepository userRepository; // → 추가
+	@Autowired private CorsConfig corsConfig; // → 추가
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
 		.and()
-		.addFilter(corsFilter)
+		//.addFilter(corsFilter) → 제거
 		.formLogin().disable()
 		.httpBasic().disable()
-         // UsernamePasswordAuthenticationFilter 필터를 등록
-		.addFilter(new JwtAuthenticationFilter(authenticationManager))
+		.apply(new MyCustomDsl()) // → 추가
 		.authorizeRequests()
 			.antMatchers("/api/v1/user/**")
 			.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
@@ -171,12 +170,24 @@ public class SecurityConfig {
 		
 		return http.build();
 	}
+
+	// 추가
+	public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
+		@Override
+		public void configure(HttpSecurity http) throws Exception {
+			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+			http.addFilter(corsConfig.corsFilter())
+				.addFilter(new JwtAuthenticationFilter(authenticationManager));
+		}
+	}
 }
 ```
-1. JwtAuthenticationFilter 필터가 꼭 전달해야할 파라미터가 있는데 바로 AuthenticationManager 이다.
-2. UsernamePasswordAuthenticationFilter (= JwtAuthenticationFilter) 는 로그인을 진행하는 필터인데  AuthenticationManager를 통해 로그인을 진행하기 때문
-3. 위와같이 코드를 작성하면 에러가난다. JwtAuthenticationFilter 에서 AuthenticationManager 를 받고있지 않기때문.
-4. 다음과 같이 JwtAuthenticationFilter에다 생성자를 추가한다.
+1. 우선 MyCustomDsl를 만들어 커스텀 필터들은 여기서 관리하기로 한다. 따라서 기존에 등록되어있던 corsFilter또한 주석처리해주고, MyCustomDsl에서 추가해준다.
+2. MyCustomDsl에다 앞서 만든 JwtAuthenticationFilter를 추가해준다. 이때, JwtAuthenticationFilter에게 꼭 전달해야할 파라미터가 있는데 바로 AuthenticationManager이다.
+	- ※ JwtAuthenticationFilter가 상속받고 있는 UsernamePasswordAuthenticationFitler는 로그인을 진행하는 필터인데, 이때 AuthenticationManager를 통해 로그인을 진행하므로 JwtAuthenticationFilter에 AuthenticationManager를 꼭 전달해야만 한다.
+3. apply()함수를 통해 생성한 MyCustomDsl을 filterChain에다 추가해준다.
+4. 그런데 위와같이 코드를 작성하면 에러가난다. JwtAuthenticationFilter 에서 AuthenticationManager 를 받고있지 않기때문.
+5. 다음과 같이 JwtAuthenticationFilter에다 생성자를 추가한다.
 
 ### 24-2-3. JwtAuthenticationFilter 생성자 추가 및 구현
 ```java
