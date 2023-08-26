@@ -157,6 +157,7 @@
 	2. 잘못된 로그인정보 request
 	<img src="./img/chapter25_7.png">
 	<img src="./img/chapter25_8.png">
+	
 	- 401에러(권한없음) 발생. DB에서 해당 로그인 정보를 조회한 후, 올바른 로그인 정보가 아니므로 인증이 정상적으로 이뤄지지 않음. 따라서 successfulAuthentication()함수가 실행되지 않음.
 
 ## 25-4. JwtAuthenticationFilter 전체 코드
