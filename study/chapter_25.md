@@ -140,7 +140,7 @@
 
 ## 25-3. JwtAuthenticationFilter - successfulAuthentication() 함수 구현하기
 - 앞서 작성한 attemptAuthentication()이 실행된 후 인증이 정상적으로 완료되었다면 successfulAuthentication()함수가 실행된다.
-- 우리는 여기서 JWT토큰을 만들어서 로그인 request를 보낸 사용자에게 JWT토큰을 respon	se해주면 된다.
+- 우리는 여기서 JWT토큰을 만들어서 로그인 request를 보낸 사용자에게 JWT토큰을 response해주면 된다.
 	```java
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
@@ -149,17 +149,16 @@
 		super.successfulAuthentication(request, response, chain, authResult);
 	}
 	```
-- 앞서 작성한 attemptAuthentication()이 실행된 후 인증이 정상적으로 완료되었다면 successfulAuthentication()함수가 실행된다.
-- 확인해보기
+- [attemptAuthentication()실행 → 인증완료 → successfulAuthentication()실행] 확인해보기
 	1. 올바른 로그인정보 request
 	<img src="./img/chapter25_5.png">
 	<img src="./img/chapter25_6.png">
-	---
+	
 	2. 잘못된 로그인정보 request
 	<img src="./img/chapter25_7.png">
 	<img src="./img/chapter25_8.png">
 		- 401에러(권한없음) 발생. DB에서 해당 로그인 정보를 조회한 후, 올바른 로그인 정보가 아니므로 인증이 정상적으로 이뤄지지 않음. 따라서 successfulAuthentication()함수가 실행되지 않음.
-		
+
 ## 25-4. JwtAuthenticationFilter 전체 코드
 ```java
 @RequiredArgsConstructor
