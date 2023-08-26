@@ -4,19 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import com.cos.jwt.config.jwt.JwtAuthenticationFilter;
 import com.cos.jwt.config.jwt.JwtAuthorizationFilter;
+import com.cos.jwt.filter.MyFilter3;
 import com.cos.jwt.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Configuration // IoC
 @EnableWebSecurity // 시큐리티 설정 활성화

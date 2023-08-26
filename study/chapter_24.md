@@ -36,6 +36,7 @@
 ## 24-1. UserDetails와 UserDetailsService 구현하기
 ### 24-1-1. PrincipalDetails
 ```java
+@Data
 public class PrincipalDetails implements UserDetails{
 	
 	private User user;
