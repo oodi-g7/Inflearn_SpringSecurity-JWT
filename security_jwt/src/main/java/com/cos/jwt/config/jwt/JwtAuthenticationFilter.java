@@ -1,7 +1,7 @@
 package com.cos.jwt.config.jwt;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.cos.jwt.config.auth.PrincipalDetails;
 import com.cos.jwt.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,12 +70,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
 			// 5. principalDetails변수에 값이 담겨있다면 로그인이 정상적으로 이루어졌다는 뜻.
 			System.out.println("로그인 완료됨 : " + principalDetails.getUser().getUsername());
-			
-			
-			// 6. JWT 토큰 만들기
-			
-			
-			// 7. authentication객체를 return해주면 시큐리티 세션영역에 저장됨.
+
+			// 6. authentication객체를 return해주면 시큐리티 세션영역에 저장됨.
 			// 시큐리티 세션영역에 저장해주는 이유는 권한 관리를 security가 대신 해주기 때문에 편리하기 때문.
 			// JWT토큰을 사용하면서 시큐리티 세션을 만들 이유는 없음. 단지 권한처리를 편리하게 하기 위해 security session에 저장하는 것이므로 생략가능함
 			return authentication;
@@ -86,11 +84,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	}
 
 	// attemptAuthentication 실행 후 인증이 정상적으로 되었으면 successfulAuthentcation 함수가 실행
-	// JWT토큰을 만들어서 request요청한 사용자에게 JWT 토큰을 response해주면 됨
+	// 7. JWT토큰을 만들어서 request요청한 사용자에게 JWT 토큰을 response해주면 됨
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		System.out.println("successfulAuthentication 실행됨 : 인증이 완료되었다는 뜻");
-		super.successfulAuthentication(request, response, chain, authResult);
+		PrincipalDetails principalDetails = (PrincipalDetails)authResult.getPrincipal();
+		
+		// JWT라는 라이브러리 이용(pom.xml에 java-jwt Dependency) -> JWT토큰 생성
+		String jwtToken = JWT.create() // builder패턴
+				.withSubject("cos토큰") // 토큰 이름
+				.withExpiresAt(new Date(System.currentTimeMillis()+(60000*10))) // 만료시간 : 토큰이 언제까지 유효할지, 10분으로 설정
+				.withClaim("id", principalDetails.getUser().getId()) // withClaim은 비공개 claim으로, 토큰에 넣고 싶은 key-value값을 자유롭게 작성가능. (정해진 규칙 없음)
+				.withClaim("username", principalDetails.getUser().getUsername())
+				.sign(Algorithm.HMAC512("cos")); // 내 서버만 아는 고유한 값, SecretKey! 
+												 // HMAC512 : RSA방식 아니고 Hash암호방식, 특징은 내 서버만 아는 secret값이 필수
+		
+		// 응답헤더 Authorization키 값에다 Bearer방식임을 명시하고, jwtToken을 담아 전송("Bearer" 다음 한칸 띄어쓰기 필수 !)
+		response.addHeader("Authorization", "Bearer " + jwtToken);
 	}
 }
