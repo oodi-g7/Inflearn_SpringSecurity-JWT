@@ -20,17 +20,34 @@ import com.cos.jwt.config.auth.PrincipalDetails;
 import com.cos.jwt.model.User;
 import com.cos.jwt.repository.UserRepository;
 
+// 인증요청이 있을때 동작하는 필터가 아님
+// 시큐리티가 filter를 가지고 있는데 그 필터중에 BasicAuthenticationFilter라는 것이 있음
+// 권한이나 인증이 필요한 특정 주소를 요청했을 때 위 필터를 무조건 타게 되어있음
+// 만약에 권한이나 인증이 필요한 주소가 아니라면 해당 필터를 타지 않음
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+	
 	private UserRepository userRepository;
 
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+//	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+//		super(authenticationManager);
+//		this.userRepository = userRepository;
+//		System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
+//	}
+
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
-		this.userRepository = userRepository;
 	}
 
+	// 인증이나 권한이 필요한 주소요청이 있을 때 해당 필터를 타게 됨
+	// 여기서 헤더값을 확인해보자
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
+		
+		String jwtHeader = request.getHeader("Authorization");
+		System.out.println(jwtHeader);
+		
 		String header = request.getHeader(JwtProperties.HEADER_STRING);
 		if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
 			chain.doFilter(request, response);

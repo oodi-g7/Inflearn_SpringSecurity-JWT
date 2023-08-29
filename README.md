@@ -43,5 +43,5 @@
 - [23강. JWT 임시 토큰 만들어서 테스트 해보기](./study/chapter_23.md)
 - [24강. JWT를 위한 로그인 시도](./study/chapter_24.md)
 - [25강. JWT를 위한 강제 로그인 진행](./study/chapter_25.md)
-- 26강. JWT토큰 만들어서 응답하기
-- 27강. JWT토큰 서버 구축 완료
+- [26강. JWT토큰 만들어서 응답하기](./study/chapter_26.md)
+- [27강. JWT토큰 서버 구축 완료](./study/chapter_27.md)
