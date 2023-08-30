@@ -19,10 +19,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 }
 ```
-- 시큐리티가 가진 필터 중 BasicAuthenticationFilter는 인증요청이 있을 때 동작하는 필터가 아니라, 사용자가 권한이나 인증이 필요한 특정 주소를 요청했을 때 해당 필터가 동작하도록 되어있음
-- 만약 권한이나 인증이 필요한 주소가 아니라면 해당 필터는 동작하지 않는다
-- 권한/인증이 필요한 요청을 보내어 해당 필터가 동작하는지 테스트해본다
-    1. SecurityConfig
+- 시큐리티가 가진 필터 중 BasicAuthenticationFilter는 인증요청이 있을 때 동작하는 필터가 아니라, 사용자가 권한이나 인증이 필요한 특정 주소를 요청했을 때 해당 필터가 동작하도록 되어있다.
+- 만약 권한이나 인증이 필요한 주소가 아니라면 해당 필터는 동작하지 않는다.
+- 권한/인증이 필요한 요청을 보내어 해당 필터가 동작하는지 테스트해본다.
+    1. SecurityConfig 확인
         ```java
         .antMatchers("/api/v1/user/**")
 		.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
@@ -41,3 +41,5 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         - 앞서 포스트맨에서 Authorization 키 값에 담아준 hello라는 값이 정상적으로 출력된 것을 확인할 수 있다.
         - 로그인이 완료된 사용자는 헤더에 JWT토큰을 담아올 것이므로, 서버에선 JWT 토큰을 검증하여 해당 사용자가 정상적인 사용자인지를 확인하는 과정이 필요하다.
         - 이제 사용자가 요청헤더에 보낸 JWT토큰을 검증하는 과정을 구현해본다.
+    
+    ## 27-2. BasicAuthenticationFilter : JWT토큰 검증하기

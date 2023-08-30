@@ -56,22 +56,29 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			User user = om.readValue(request.getInputStream(), User.class);
 			System.out.println(user);
 			
-			// 2. 정상인지 로그인 시도 해보기. authenticationManager로 로그인 시도를 하면
-			// PrincipalDetailsService가 호출되어 loadUserByUsername()함수가 실행됨.
+			
+			// 2. 정상인지 로그인 시도 해보기. 
+			// authenticationManager로 로그인 시도를 하면 PrincipalDetailsService가 호출되어 loadUserByUsername()함수가 실행된다.
+			// loadUserByUsername()함수가 실행되어 로그인 정보가 정확하면, 반환된 PrincipalDetails객체(로그인한 유저정보)는 authentication변수에 담긴다.
 			UsernamePasswordAuthenticationToken authenticationToken =
 					new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 			
-			// 3. authenticationManager로 로그인 시도를 하면 PrincipalDetailsService가 호출되어 loadUserByUsername()함수가 실행된다.
-			// loadUserByUsername()함수가 실행되어 로그인 정보가 정확하면, 반환된 PrincipalDetails객체(로그인한 유저정보)는 authentication변수에 담긴다.
 			Authentication authentication = 
 					authenticationManager.authenticate(authenticationToken);
 			
-			// 4. authentication변수가 가진 Principal객체를 꺼내어 principalDetails변수에 담아준다.
+			
+			
+			// 3. authentication변수가 가진 Principal객체를 꺼내어 principalDetails변수에 담아준다.
 			PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
-			// 5. principalDetails변수에 값이 담겨있다면 로그인이 정상적으로 이루어졌다는 뜻.
+			
+			
+			
+			// 4. principalDetails변수에 값이 담겨있다면 로그인이 정상적으로 이루어졌다는 뜻.
 			System.out.println("로그인 완료됨 : " + principalDetails.getUser().getUsername());
 
-			// 6. authentication객체를 return해주면 시큐리티 세션영역에 저장됨.
+			
+			
+			// 5. authentication객체를 return해주면 시큐리티 세션영역에 저장됨.
 			// 시큐리티 세션영역에 저장해주는 이유는 권한 관리를 security가 대신 해주기 때문에 편리하기 때문.
 			// JWT토큰을 사용하면서 시큐리티 세션을 만들 이유는 없음. 단지 권한처리를 편리하게 하기 위해 security session에 저장하는 것이므로 생략가능함
 			return authentication;
@@ -84,7 +91,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	}
 
 	// attemptAuthentication 실행 후 인증이 정상적으로 되었으면 successfulAuthentcation 함수가 실행
-	// 7. JWT토큰을 만들어서 request요청한 사용자에게 JWT 토큰을 response해주면 됨
+	// 6. JWT토큰을 만들어서 request요청한 사용자에게 JWT 토큰을 response해주면 됨
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {

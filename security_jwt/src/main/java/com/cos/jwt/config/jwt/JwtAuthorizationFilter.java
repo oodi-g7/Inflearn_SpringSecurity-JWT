@@ -28,14 +28,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	
 	private UserRepository userRepository;
 
-//	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
-//		super(authenticationManager);
-//		this.userRepository = userRepository;
-//		System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
-//	}
-
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
 		super(authenticationManager);
+		this.userRepository = userRepository;
+		System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
 	}
 
 	// 인증이나 권한이 필요한 주소요청이 있을 때 해당 필터를 타게 됨
@@ -48,6 +44,45 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		String jwtHeader = request.getHeader("Authorization");
 		System.out.println(jwtHeader);
 		
+		// JWT 토큰을 검증해서 정상적인 사용자인지 확인
+		// 1. header가 있는지 확인
+		if(jwtHeader == null || !jwtHeader.startsWith("Bearer")) {
+			chain.doFilter(request, response);
+			return;
+		}
+		
+		// 2. 사용자 검증
+		String jwtToken = request.getHeader("Authorization").replace("Bearer ", "");
+		
+		String username = JWT.require(Algorithm.HMAC512("cos")) // HMAC512암호화를 사용하고, secret이 "cos"인 토큰
+							.build()
+							.verify(jwtToken) // jwt토큰을 서명하기
+							.getClaim("username") // 서명이 정상적으로 이뤄지면 토큰 내 정보인 "username"을 가져올 것
+							.asString(); // "username"을 가져와서 String으로 캐스팅해줌
+		
+		// 3. 서명되었는지 확인 - null이 아니라면 서명이 완료된 것
+		if(username != null) {
+			// select 조회가 이뤄지면 서명한 사용자는 정상적인 사용자 
+			User userEntity = userRepository.findByUsername(username);
+			
+			// jwt토큰 서명을 통해 서명이 정상이면 Authentication 객체를 만들어준다. 
+			PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
+			Authentication authentication = // authentication객체는 사용자의 로그인 요청시 만들어지는 객체로서(JwtAuthenticationFilter - attemptAuthentication() 참고)
+											// principalDetails객체(로그인한 사용자 객체)와 사용자의 비밀번호가 필요하다. 그 정보들을 가지고  로그인을 시도하여 loadByUsername()을 실행시킴 
+											// 현재는 이미 로그인 된 사용자(username != null, 정상적인 사용자)가 가지고 온 jwt토큰을 검증하는 과정이므로 
+											// 정석대로 authentication을 만드는 것이 아니라 강제로 authentication 객체를 생성해준다.
+											// 넘기는 파라미터로는 principalDetails객체, 사용자의 비밀번호 값은 null로 두고, 권한정보(authorities)를 추가해준다.
+					new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities()); 
+			
+			
+			// 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해!
+			// 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!
+			// 패스워드는 모르니까 null 처리, 어차피 지금 인증하는게 아니니까!!
+			// https://velog.io/@blacklandbird/JWT%EB%A1%9C-TOKEN%EB%B0%9C%EA%B8%89%ED%95%98%EA%B8%B0
+			
+		}
+		
+		/*
 		String header = request.getHeader(JwtProperties.HEADER_STRING);
 		if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
 			chain.doFilter(request, response);
@@ -79,5 +114,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		}
 
 		chain.doFilter(request, response);
+		*/
 	}
 }
