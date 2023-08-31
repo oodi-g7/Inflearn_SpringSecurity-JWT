@@ -39,6 +39,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		
 		System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
 		
 		String jwtHeader = request.getHeader("Authorization");
@@ -74,6 +75,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 											// 넘기는 파라미터로는 principalDetails객체, 사용자의 비밀번호 값은 null로 두고, 권한정보(authorities)를 추가해준다.
 					new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities()); 
 			
+			// 강제로 시큐리티 세션에 접근하여 Authentication객체를 저장
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
+			chain.doFilter(request, response);
 			
 			// 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해!
 			// 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!
