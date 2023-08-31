@@ -31,17 +31,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
 		super(authenticationManager);
 		this.userRepository = userRepository;
-		System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
+		
 	}
+	
 
 	// 인증이나 권한이 필요한 주소요청이 있을 때 해당 필터를 타게 됨
-	// 여기서 헤더값을 확인해보자
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
 		System.out.println("인증이나 권한이 필요한 주소 요청이 됨");
 		
+		
+		// 헤더값 확인해보기
 		String jwtHeader = request.getHeader("Authorization");
 		System.out.println(jwtHeader);
 		
@@ -67,6 +69,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			User userEntity = userRepository.findByUsername(username);
 			
 			// jwt토큰 서명을 통해 서명이 정상이면 Authentication 객체를 만들어준다. 
+			// https://velog.io/@blacklandbird/JWT%EB%A1%9C-TOKEN%EB%B0%9C%EA%B8%89%ED%95%98%EA%B8%B0
 			PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
 			Authentication authentication = // authentication객체는 사용자의 로그인 요청시 만들어지는 객체로서(JwtAuthenticationFilter - attemptAuthentication() 참고)
 											// principalDetails객체(로그인한 사용자 객체)와 사용자의 비밀번호가 필요하다. 그 정보들을 가지고  로그인을 시도하여 loadByUsername()을 실행시킴 
@@ -79,12 +82,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			
 			chain.doFilter(request, response);
-			
-			// 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해!
-			// 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!
-			// 패스워드는 모르니까 null 처리, 어차피 지금 인증하는게 아니니까!!
-			// https://velog.io/@blacklandbird/JWT%EB%A1%9C-TOKEN%EB%B0%9C%EA%B8%89%ED%95%98%EA%B8%B0
-			
 		}
 		
 		/*

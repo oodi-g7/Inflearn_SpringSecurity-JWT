@@ -97,6 +97,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authResult) throws IOException, ServletException {
 		PrincipalDetails principalDetails = (PrincipalDetails)authResult.getPrincipal();
 		
+		/*
 		// JWT라는 라이브러리 이용(pom.xml에 java-jwt Dependency) -> JWT토큰 생성
 		String jwtToken = JWT.create() // builder패턴
 				.withSubject("cos토큰") // 토큰 이름
@@ -105,8 +106,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.withClaim("username", principalDetails.getUser().getUsername())
 				.sign(Algorithm.HMAC512("cos")); // 내 서버만 아는 고유한 값, SecretKey! 
 												 // HMAC512 : RSA방식 아니고 Hash암호방식, 특징은 내 서버만 아는 secret값이 필수
-		
-		// 응답헤더 Authorization키 값에다 Bearer방식임을 명시하고, jwtToken을 담아 전송("Bearer" 다음 한칸 띄어쓰기 필수 !)
+												   
+		// 응답헤더 Authorization키 값에다 Bearer방식임을 명시하고, jwtToken을 담아 전송("Bearer" 다음 한칸 띄어쓰기 필수 !)										  
 		response.addHeader("Authorization", "Bearer " + jwtToken);
+		*/
+		
+		String jwtToken = JWT.create()
+				.withSubject("cos토큰")
+				.withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
+				.withClaim("id", principalDetails.getUser().getId())
+				.withClaim("username", principalDetails.getUser().getUsername())
+				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+		
+		
+		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
 	}
 }
